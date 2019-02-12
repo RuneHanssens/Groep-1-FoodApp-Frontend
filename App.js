@@ -1,33 +1,38 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Animated, Image } from "react-native";
+import Category from "./components/Category.js";
 
 export default class App extends React.Component {
 
   constructor(props){
     super(props)
-    this.state = {
-      number: 0
-    }
+
   }
 
-  render() {
+/*  render() {
     return (
       <View style={styles.container}>
-        <View style={styles.categoryContainer}>
-          <Text>Category</Text>
-        </View>
-        <Button title='test' onPress={this.testfunc}/>
-        <Text>{this.state.number}</Text>
+      <ProgressBar
+          row
+          progress={0.5}
+          duration={500}
+      >
+        <Text>Hello world!</Text>
+      </ProgressBar>
       </View>
     );
-  }
-
-  testfunc = () => {
-    alert('this is a test!')
-    let x = this.state.number + 1;
-    this.setState({
-      number: x
-    })
+  }*/
+  render(){
+    return (
+      <View style={styles.container}>
+        <Category
+          row
+          progress={0.1}
+          duration={500}
+        >
+        </Category>
+      </View>
+    )
   }
 }
 
@@ -39,13 +44,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
   },
-  categoryContainer: {
-    borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: '#000',
-    padding: 20,
-    marginTop: 10,
-    backgroundColor:'green',
-    width: '80%',
-  }
 });
