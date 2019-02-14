@@ -1,22 +1,24 @@
 import React from "react";
 import {
-  AppRegistry,
   StyleSheet,
-  Text,
   View,
-  Animated,
-  Image,
-  Button,
-  TouchableOpacity
+  ScrollView,
+  Text
 } from "react-native";
-import Category from "./components/Category.js";
-
+import Vegetables from './components/categories/Vegetables.js';
+import Fruits from './components/categories/Fruits.js';
+import Water from './components/categories/Water.js';
+import Nuts from './components/categories/Nuts.js';
+import FishMilkEggsPoultry from './components/categories/FishMilkEggsPoultry.js';
+import RedMeat from './components/categories/RedMeat';
+import BreadRicePotatoesPasta from './components/categories/BreadRicePotatoesPasta';
+import Sport from './components/categories/Sport';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       progressTest: 0
-    };
+    }
   }
 
   addProgress = () => {
@@ -27,7 +29,6 @@ export default class App extends React.Component {
     } else {
       newProgress = this.state.progressTest + 10;
     }
-    console.log(newProgress);
     this.setState({
       progressTest: newProgress
     });
@@ -35,115 +36,53 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-
-        <TouchableOpacity
-          style={styles.categoryContainer}
-          onPress={this.addProgress}
-        >
-          <Category
-            name={"Groenten"}
-            progress={this.state.progressTest}
-            duration={500}
-            fillColor={'#7e9b4e'}
-            barColor={'#758e48'}
-            height={130}
-          >
-            <View
-              style={{
-                flex:1,
-                flexDirection: 'row',
-                justifyContent:'space-evenly',
-
-              }}
-            >
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require('./images/carrot.png')}
-              />
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require('./images/broccoli.png')}
-              />
-            </View>
-          </Category>
-        </TouchableOpacity>
-
-        <View style={styles.categoryContainer}>
-          <Category
-              name={"Fruit"}
-              progress={this.state.progressTest}
-              duration={500}
-              fillColor={'#7e9b4e'}
-              barColor={'#758e48'}
-              height={130}
-            >
-              <View
-                style={{
-                  flex:1,
-                  flexDirection: 'row',
-                  justifyContent:'space-evenly',
-
-                }}
-              >
-                <Image
-                  style={{ width: 50, height: 50 }}
-                  source={require('./images/carrot.png')}
-                />
-                <Image
-                  style={{ width: 50, height: 50 }}
-                  source={require('./images/broccoli.png')}
-                />
-              </View>
-            </Category>
-          </View>
-
-          <View style={styles.categoryContainer}>
-          <Category
-              name={"Fruit"}
-              progress={this.state.progressTest}
-              duration={500}
-              fillColor={'#7e9b4e'}
-              barColor={'#758e48'}
-              height={130}
-            >
-              <View
-                style={{
-                  flex:1,
-                  flexDirection: 'row',
-                  justifyContent:'space-evenly',
-
-                }}
-              >
-                <Image
-                  style={{ width: 50, height: 50 }}
-                  source={require('./images/carrot.png')}
-                />
-                <Image
-                  style={{ width: 50, height: 50 }}
-                  source={require('./images/broccoli.png')}
-                />
-              </View>
-            </Category>
-          </View>
+      <View style={styles.mainView}>
+        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle}>
+          <Text style={{
+            fontSize:30,
+            textAlign:'center',
+            marginBottom: 10,
+          }}>Food app</Text>
+          <Sport/>
+          <Water/>
+          <Vegetables/>
+          <Fruits/>
+          <Nuts/>
+          <BreadRicePotatoesPasta/>
+          <FishMilkEggsPoultry/>
+          <RedMeat/>
+        </ScrollView>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  categoriesContainer: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    marginTop: 20,
-    justifyContent: 'space-evenly',
-    flexDirection:'column',
-    
+    justifyContent: "center",
+    flexDirection: "column",
+    width: "90%",
+    alignSelf: "center"
   },
-  categoryContainer: {
-    alignItems: "center",
-    flexDirection: "row",
-    width: "90%"
-  }
+  mainView: {
+    flex: 1,
+    position: 'relative',
+    paddingTop:30,
+  },
+  scrollViewStyle: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '100%',
+  },
+  scrollViewContentStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
+    alignSelf:'center'
+  },
 });
