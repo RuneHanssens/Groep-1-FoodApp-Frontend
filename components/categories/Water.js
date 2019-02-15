@@ -9,13 +9,21 @@ import {
 } from "react-native";
 import Category from "./Category";
 import AmountInput from "./../AmountInput";
+
 class Water extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cupsOfWater: 0
+      cupsOfWater: 0,
+      progress: 0
     };
   }
+
+  setProgress = value => {
+    this.setState({
+      progress: value
+    });
+  };
 
   setCupsOfWater = value => {
     this.setState({
@@ -23,21 +31,31 @@ class Water extends Component {
     });
   };
 
-  submit = () => {
-    console.log("submit water");
+  submit = async () => {
     let data = {
       amount: this.state.cupsOfWater
     };
-    console.log(data);
-    console.log("sending data to server");
-
-    fetch("http://foodapp-backend.serveo.net/api/day/water", {
+    //http://foodapp-backend.serveo.net/api/day/water
+    //http://foodapp-backend.serveo.net/api/day/water/points
+    await fetch("http://foodapp-backend.serveo.net/api/day/water", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       }
-    }).then(res => console.log(res));
+    }).then(console.log("then callback"));
+
+    this.setState({
+      cupsOfWater: 0
+    });
+
+    let response = await fetch(
+      "http://foodapp-backend.serveo.net/api/day/water/points"
+    );
+    let responseData = await response.json();
+    this.setState({
+      progress: responseData
+    });
   };
 
   render() {
@@ -52,11 +70,12 @@ class Water extends Component {
 
     return (
       <Category
+        ref={this.childRef}
         name={"Water"}
-        progress={0}
+        progress={this.state.progress}
         duration={500}
         fillColor={"#B9CED5"}
-        barColor={"black"}
+        barColor={"#a9c3cc"}
         onSubmit={this.submit}
         dropDownView={dropDownView}
       >

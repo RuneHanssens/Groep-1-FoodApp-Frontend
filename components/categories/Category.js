@@ -36,6 +36,14 @@ class Category extends Component {
     });
   };
 
+  submit = () => {
+    //closes itself + call parent submit
+    this.props.onSubmit();
+    this.setState({
+      clicked: false
+    });
+  };
+
   render() {
     const { borderRadius, barColor, fillColor, name, height } = this.props;
 
@@ -51,7 +59,7 @@ class Category extends Component {
       dropDownView = this.props.dropDownView;
       confirmButton = (
         <TouchableOpacity
-          onPress={this.props.onSubmit}
+          onPress={this.submit}
           style={{
             alignSelf: "center",
             backgroundColor: "#fff",
@@ -75,14 +83,14 @@ class Category extends Component {
     return (
       <TouchableOpacity
         onPress={this.onClick}
-        style={{
+        style={[{
           flexDirection: "row",
           height: this.state.height,
           borderRadius,
           alignItems: "center",
           width: "100%",
-          marginBottom: 20
-        }}
+          marginTop: 20,
+        },this.props.style]}
       >
         <View
           style={[
@@ -100,7 +108,7 @@ class Category extends Component {
               backgroundColor: barColor,
               width: widthInterpolated
             },
-            this.props.progress == 100
+            this.props.progress >= 100
               ? {
                   borderRadius
                 }

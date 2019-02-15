@@ -12,18 +12,24 @@ class FishMilkEggsPoultry extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      progress:0
     }
+  }
+  
+  setProgress = (value) =>{
+    this.setState({
+      progress:value
+    })
   }
 
   render() {
     return (
       <Category
             name={"Vis, Gevogelte, Eieren en Zuivelproducten "}
-            progress={0}
+            progress={this.state.progress}
             duration={500}
             fillColor={"#ADC460"}
-            barColor={"black"}
+            barColor={"#9cb253"}
           >
 
             <View

@@ -45,7 +45,7 @@ class AmountInput extends Component {
         }}
       >
         <TouchableOpacity style={styles.button} onPress={this.remove}>
-          <Text style={styles.textStyle}>-</Text>
+          <Text style={styles.buttonTextStyle}>-</Text>
         </TouchableOpacity>
         <Text
           style={[
@@ -61,7 +61,7 @@ class AmountInput extends Component {
           {this.props.value}
         </Text>
         <TouchableOpacity style={styles.button} onPress={this.add}>
-          <Text style={styles.textStyle}>+</Text>
+          <Text style={styles.buttonTextStyle}>+</Text>
         </TouchableOpacity>
       </View>
     );
@@ -79,6 +79,9 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontSize: 25
+  },
+  buttonTextStyle:{
+    fontSize:30
   }
 });
 export default AmountInput;

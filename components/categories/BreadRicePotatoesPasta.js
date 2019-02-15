@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Dropdown } from 'react-native-material-dropdown';
 import {
   Text,
   TouchableOpacity,
@@ -11,18 +12,60 @@ import Category from "./Category";
 class BreadRicePotatoesPasta extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      progress:0
+    };
+  }
+
+  setProgress = (value) =>{
+    this.setState({
+      progress:value
+    })
   }
 
   render() {
+    let data = [{
+      value: 'Brood',
+    }, {
+      value: 'Pasta',
+    }, {
+      value: 'Rijst',
+    },{
+      value:'Aardappelen',
+    }];
+
+
+    dropDownView = (
+      <View>
+        <Dropdown 
+          label='Selecteer het graanproduct'
+          data={data} 
+          value={data[0].value}
+          style={{
+            color:'#fff',
+            fontSize: 20,
+          }}
+          itemTextStyle={{
+            alignSelf:'center',
+          }}
+          containerStyle={{
+            width:'85%',
+            alignSelf: 'center',
+          }}
+          pickerStyle={{
+            
+          }}
+          />
+      </View>
+    )
     return (
       <Category
         name={"Graanproducten"}
-        progress={0}
+        progress={this.state.progress}
         duration={500}
         fillColor={"#96B057"}
-        barColor={"black"}
-        onPress={() => console.log("Bread etc pressed!")}
+        barColor={"#809946"}
+        dropDownView={dropDownView}
       >
         <View
           style={{

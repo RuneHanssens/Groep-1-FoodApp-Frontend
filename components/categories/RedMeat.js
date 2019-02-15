@@ -12,18 +12,25 @@ class RedMeat extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      progress:0
     }
+  }
+
+  setProgress = (value) =>{
+    this.setState({
+      progress:value
+    })
   }
 
   render() {
     return (
       <Category
             name={"Rood Vlees en Boter"}
-            progress={0}
+            progress={this.state.progress}
             duration={500}
             fillColor={"#F7AC4B"}
-            barColor={"black"}
+            barColor={"#ed9f3b"}
+            style={{marginBottom: 20,}}
           >
             <View
               style={{

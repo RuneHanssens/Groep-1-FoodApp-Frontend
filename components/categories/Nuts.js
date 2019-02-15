@@ -12,18 +12,24 @@ class Nuts extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      progress:0
     }
+  }
+
+  setProgress = (value) =>{
+    this.setState({
+      progress:value
+    })
   }
 
   render() {
     return (
       <Category
             name={"Noten"}
-            progress={0}
+            progress={this.state.progress}
             duration={500}
             fillColor={"#96B057"}
-            barColor={"black"}
+            barColor={"#809946"}
           >
             <View
               style={{

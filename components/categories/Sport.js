@@ -12,18 +12,24 @@ class Sport extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      progress:0
     }
+  }
+
+  setProgress = (value) =>{
+    this.setState({
+      progress:value
+    })
   }
 
   render() {
     return (
       <Category
             name={"Sport"}
-            progress={0}
+            progress={this.state.progress}
             duration={500}
             fillColor={"#e5e7ea"}
-            barColor={"black"}
+            barColor={"#dcdee2"}
           >
             <View
               style={{

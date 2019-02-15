@@ -12,15 +12,21 @@ class Vegetables extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      progress:0
     }
+  }
+
+  setProgress = (value) =>{
+    this.setState({
+      progress:value
+    })
   }
 
   render() {
     return (
       <Category
             name={"Groenten"}
-            progress={0}
+            progress={this.state.progress}
             duration={500}
             fillColor={"#7e9b4e"}
             barColor={"#758e48"}

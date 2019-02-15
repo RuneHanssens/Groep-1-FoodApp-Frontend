@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  Text
+  Text,
+  AppState
 } from "react-native";
 import Vegetables from './components/categories/Vegetables.js';
 import Fruits from './components/categories/Fruits.js';
@@ -17,43 +18,73 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      progressTest: 0
+      appState: AppState.currentState,
     }
   }
 
-  addProgress = () => {
-    console.log("add progress");
-    let newProgress = 0;
-    if (this.state.progressTest >= 100) {
-      newProgress = 0;
-    } else {
-      newProgress = this.state.progressTest + 10;
+  componentDidMount = () =>{
+    AppState.addEventListener('change', this._handleAppStateChange)
+    this.loadProgress()
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      this.loadProgress()
     }
-    this.setState({
-      progressTest: newProgress
-    });
-  };
+    this.setState({appState: nextAppState})
+  }
+
+  loadProgress = async () => {
+    console.log('load progress')
+    let response = await fetch('http://foodapp-backend.serveo.net/api/day/points')
+    let data = await response.json()
+    console.log(data)
+    this.refs.waterCategory.setProgress(data.WATER)
+    this.refs.vegetableCategory.setProgress(data.VEGETABLE)
+    this.refs.fruitCategory.setProgress(data.FRUIT)
+    this.refs.nutCategory.setProgress(data.NUTS)
+    this.refs.starchCategory.setProgress(data.STARCHPRODUCT)
+    this.refs.dairyFishPoultryCategory.setProgress(data.DAIRYFISHPOULTRY)
+    this.refs.redMeatCategory.setProgress(data.FATTYFOOD)
+    //TODO
+  }
 
   render() {
     return (
       <View style={styles.mainView}>
-        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle}>
+        <View
+          style={{
+            backgroundColor:'#fff',
+            shadowOffset:{  width: 5,  height: 4,  },
+            shadowColor: 'black',
+            shadowOpacity: 0.1,
+          }}
+        >
           <Text style={{
-            fontSize:30,
-            textAlign:'center',
-            marginBottom: 10,
-          }}>Food app</Text>
+                fontSize:30,
+                textAlign:'center',
+                marginBottom: 10,
+              }}>Food app</Text>  
+        </View>
+        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle}>
           <Sport/>
-          <Water/>
-          <Vegetables/>
-          <Fruits/>
-          <Nuts/>
-          <BreadRicePotatoesPasta/>
-          <FishMilkEggsPoultry/>
-          <RedMeat/>
+          <Water ref='waterCategory'/>
+          <Vegetables ref='vegetableCategory'/>
+          <Fruits ref='fruitCategory'/>
+          <Nuts ref='nutCategory'/>
+          <BreadRicePotatoesPasta ref='starchCategory'/>
+          <FishMilkEggsPoultry ref='dairyFishPoultryCategory'/>
+          <RedMeat ref='redMeatCategory'/>
         </ScrollView>
       </View>
-    );
+    )
   }
 }
 
@@ -73,11 +104,7 @@ const styles = StyleSheet.create({
     paddingTop:30,
   },
   scrollViewStyle: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '100%',
+
   },
   scrollViewContentStyle: {
     alignItems: 'center',
@@ -85,4 +112,4 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf:'center'
   },
-});
+})
