@@ -1,13 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
-} from "react-native";
-import Category from './Category';
+} from "react-native"
+import Category from './Category'
 class Fruits extends Component {
   constructor(props) {
     super(props)
@@ -24,11 +21,13 @@ class Fruits extends Component {
   render() {
     return (
       <Category
+            ref={'child'}
             name={"Fruit"}
             progress={this.state.progress}
             duration={500}
             fillColor={"#7e9b4e"}
             barColor={"#758e48"}
+            clickEvent={this.props.clickEvent}
           >
             <View
               style={{
@@ -51,11 +50,11 @@ class Fruits extends Component {
               />
             </View>
           </Category>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
 
 })
-export default Fruits;
+export default Fruits

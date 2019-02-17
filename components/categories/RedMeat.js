@@ -1,13 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
-} from "react-native";
-import Category from './Category';
+} from "react-native"
+import Category from './Category'
 class RedMeat extends Component {
   constructor(props) {
     super(props)
@@ -25,12 +22,14 @@ class RedMeat extends Component {
   render() {
     return (
       <Category
+            ref={'child'} 
             name={"Rood Vlees en Boter"}
             progress={this.state.progress}
             duration={500}
             fillColor={"#F7AC4B"}
             barColor={"#ed9f3b"}
             style={{marginBottom: 20,}}
+            clickEvent={this.props.clickEvent}
           >
             <View
               style={{
@@ -56,4 +55,4 @@ class RedMeat extends Component {
 const styles = StyleSheet.create({
 
 })
-export default RedMeat;
+export default RedMeat

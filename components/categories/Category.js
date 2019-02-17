@@ -1,60 +1,88 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
   Text,
   TouchableOpacity,
   View,
   Animated,
   StyleSheet,
-  Image
-} from "react-native";
+} from "react-native"
 
 class Category extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       height: 0,
-      clicked: false
-    };
+      clicked: false,
+    }
   }
+
   componentWillMount = () => {
     this.animation = new Animated.Value(this.props.progress);
-  };
+  }
 
   componentDidUpdate = (prevProps, prevState) => {
     if (prevProps.progress !== this.props.progress) {
       Animated.timing(this.animation, {
         toValue: this.props.progress,
         duration: this.props.duration
-      }).start();
+      }).start()
     }
-  };
+  }
 
   onClick = () => {
-    let clicked = !this.state.clicked;
+    this.props.clickEvent(this)
+    let clicked = !this.state.clicked
     this.setState({
       clicked
-    });
-  };
+    })
+  }
+
+  handleClickEvent = (sender) => {
+    if(sender != this){
+      this.setState({
+        clicked:false
+      })
+    }
+  }
 
   submit = () => {
-    //closes itself + call parent submit
-    this.props.onSubmit();
+    this.onSubmit()
     this.setState({
       clicked: false
-    });
-  };
+    })
+  }
+
+  onSubmit = async () =>{
+    await fetch(`http://foodapp-backend.serveo.net/api/day/${this.props.apiUrl}`, {
+      method: "POST",
+      body: JSON.stringify(this.props.data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(console.log("then callback"))
+
+    this.props.reset()
+
+    let response = await fetch(
+      `http://foodapp-backend.serveo.net/api/day/${this.props.apiUrl}/points`
+    )
+    
+    let responseData = await response.json()
+    
+    this.props.setProgress(responseData)
+  }
 
   render() {
-    const { borderRadius, barColor, fillColor, name, height } = this.props;
+    const { borderRadius, barColor, fillColor, name } = this.props;
 
     const widthInterpolated = this.animation.interpolate({
       inputRange: [0, 100],
       outputRange: ["0%", "100%"],
       extrapolate: "clamp"
-    });
+    })
 
-    let dropDownView;
-    let confirmButton;
+    let dropDownView
+    let confirmButton
     if (this.state.clicked) {
       dropDownView = this.props.dropDownView;
       confirmButton = (
@@ -77,7 +105,7 @@ class Category extends Component {
             Opslaan
           </Text>
         </TouchableOpacity>
-      );
+      )
     }
 
     return (
@@ -90,7 +118,7 @@ class Category extends Component {
           alignItems: "center",
           width: "100%",
           marginTop: 20,
-        },this.props.style]}
+        }, this.props.style]}
       >
         <View
           style={[
@@ -123,7 +151,7 @@ class Category extends Component {
           onLayout={event => {
             this.setState({
               height: event.nativeEvent.layout.height
-            });
+            })
           }}
         >
           <Text
@@ -155,15 +183,14 @@ Category.defaultProps = {
   borderRadius: 10,
   barColor: "orange",
   fillColor: "blue",
-  duration: 100,
+  duration: 500,
   name: "default name"
-};
+}
 
 const styles = StyleSheet.create({
   contentView: {
     position: "absolute",
     left: 0,
-
     top: 0,
     width: "100%",
     padding: 10
@@ -174,5 +201,5 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0
   }
-});
-export default Category;
+})
+export default Category

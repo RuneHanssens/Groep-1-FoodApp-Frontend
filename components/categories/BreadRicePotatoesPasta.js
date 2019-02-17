@@ -1,20 +1,17 @@
-import React, { Component } from "react";
-import { Dropdown } from 'react-native-material-dropdown';
+import React, { Component } from "react"
+import { Dropdown } from 'react-native-material-dropdown'
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
 } from "react-native";
-import Category from "./Category";
+import Category from "./Category"
 class BreadRicePotatoesPasta extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       progress:0
-    };
+    }
   }
 
   setProgress = (value) =>{
@@ -32,8 +29,7 @@ class BreadRicePotatoesPasta extends Component {
       value: 'Rijst',
     },{
       value:'Aardappelen',
-    }];
-
+    }]
 
     dropDownView = (
       <View>
@@ -60,12 +56,14 @@ class BreadRicePotatoesPasta extends Component {
     )
     return (
       <Category
+        ref={'child'}
         name={"Graanproducten"}
         progress={this.state.progress}
         duration={500}
         fillColor={"#96B057"}
         barColor={"#809946"}
         dropDownView={dropDownView}
+        clickEvent={this.props.clickEvent}
       >
         <View
           style={{
@@ -96,5 +94,5 @@ class BreadRicePotatoesPasta extends Component {
   }
 }
 
-const styles = StyleSheet.create({});
-export default BreadRicePotatoesPasta;
+const styles = StyleSheet.create({})
+export default BreadRicePotatoesPasta

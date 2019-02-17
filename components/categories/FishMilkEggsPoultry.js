@@ -1,13 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
-} from "react-native";
-import Category from './Category';
+} from "react-native"
+import Category from './Category'
 class FishMilkEggsPoultry extends Component {
   constructor(props) {
     super(props)
@@ -25,11 +22,13 @@ class FishMilkEggsPoultry extends Component {
   render() {
     return (
       <Category
+            ref={'child'}
             name={"Vis, Gevogelte, Eieren en Zuivelproducten "}
             progress={this.state.progress}
             duration={500}
             fillColor={"#ADC460"}
             barColor={"#9cb253"}
+            clickEvent={this.props.clickEvent}
           >
 
             <View
@@ -61,11 +60,11 @@ class FishMilkEggsPoultry extends Component {
               />
             </View>    
           </Category>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
 
 })
-export default FishMilkEggsPoultry;
+export default FishMilkEggsPoultry

@@ -1,62 +1,31 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
-} from "react-native";
-import Category from "./Category";
-import AmountInput from "./../AmountInput";
+} from "react-native"
+import Category from "./Category"
+import AmountInput from "./../AmountInput"
 
 class Water extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       cupsOfWater: 0,
-      progress: 0
-    };
+    }
   }
-
-  setProgress = value => {
-    this.setState({
-      progress: value
-    });
-  };
 
   setCupsOfWater = value => {
     this.setState({
       cupsOfWater: value
-    });
-  };
+    })
+  }
 
-  submit = async () => {
-    let data = {
-      amount: this.state.cupsOfWater
-    };
-    //http://foodapp-backend.serveo.net/api/day/water
-    //http://foodapp-backend.serveo.net/api/day/water/points
-    await fetch("http://foodapp-backend.serveo.net/api/day/water", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(console.log("then callback"));
-
+  reset = () => {
     this.setState({
-      cupsOfWater: 0
-    });
-
-    let response = await fetch(
-      "http://foodapp-backend.serveo.net/api/day/water/points"
-    );
-    let responseData = await response.json();
-    this.setState({
-      progress: responseData
-    });
-  };
+      cupsOfWater:0
+    })
+  }
 
   render() {
     dropDownView = (
@@ -66,18 +35,21 @@ class Water extends Component {
           setValue={this.setCupsOfWater}
         />
       </View>
-    );
+    )
 
     return (
       <Category
-        ref={this.childRef}
+        ref={'child'}
         name={"Water"}
-        progress={this.state.progress}
-        duration={500}
+        progress={this.props.progress}
         fillColor={"#B9CED5"}
         barColor={"#a9c3cc"}
-        onSubmit={this.submit}
         dropDownView={dropDownView}
+        data={{amount:this.state.cupsOfWater}}
+        apiUrl={'water'}
+        reset={this.reset}
+        setProgress={this.props.setProgress}
+        clickEvent={this.props.clickEvent}
       >
         <View
           style={{
@@ -92,9 +64,9 @@ class Water extends Component {
           />
         </View>
       </Category>
-    );
+    )
   }
 }
 
-const styles = StyleSheet.create({});
-export default Water;
+const styles = StyleSheet.create({})
+export default Water

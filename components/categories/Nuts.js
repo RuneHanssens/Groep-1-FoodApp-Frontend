@@ -1,13 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
-} from "react-native";
-import Category from './Category';
+} from "react-native"
+import Category from './Category'
 class Nuts extends Component {
   constructor(props) {
     super(props)
@@ -25,11 +22,13 @@ class Nuts extends Component {
   render() {
     return (
       <Category
+            ref={'child'}
             name={"Noten"}
             progress={this.state.progress}
             duration={500}
             fillColor={"#96B057"}
             barColor={"#809946"}
+            clickEvent={this.props.clickEvent}
           >
             <View
               style={{
@@ -48,11 +47,11 @@ class Nuts extends Component {
               />
             </View>
           </Category>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
 
 })
-export default Nuts;
+export default Nuts

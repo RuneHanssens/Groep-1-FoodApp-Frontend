@@ -1,13 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
-  Text,
-  TouchableOpacity,
   View,
-  Animated,
   StyleSheet,
   Image
-} from "react-native";
-import Category from './Category';
+} from "react-native"
+import Category from './Category'
 class Sport extends Component {
   constructor(props) {
     super(props)
@@ -25,11 +22,13 @@ class Sport extends Component {
   render() {
     return (
       <Category
+            ref={'child'}
             name={"Sport"}
             progress={this.state.progress}
             duration={500}
             fillColor={"#e5e7ea"}
             barColor={"#dcdee2"}
+            clickEvent={this.props.clickEvent}
           >
             <View
               style={{
@@ -63,4 +62,4 @@ class Sport extends Component {
 const styles = StyleSheet.create({
 
 })
-export default Sport;
+export default Sport
