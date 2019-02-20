@@ -38,20 +38,17 @@ class BreadRicePotatoesPasta extends Component {
         index = 0
         break;
       case 'Rijst':
-      index = 1
-      break;
-      case 'Aardappelen':
-      index = 2
-      break;
-      case 'Pasta':
-      index = 1
-      break;
-      case 'Granola of Havermout':
-      index = null
-      break;
-      default:
-      index = null
+        index = 1
         break;
+      case 'Aardappelen':
+        index = 2
+        break;
+      case 'Pasta':
+        index = 1
+        break;
+      default:
+        index = null
+          break;
     }
     
     if(index != null){
@@ -64,6 +61,10 @@ class BreadRicePotatoesPasta extends Component {
       type:value,
       subType: subType
     })
+  }
+
+  scrollTo = () =>{
+    this.props.scrollTo(this)
   }
 
   render() {
@@ -92,9 +93,9 @@ class BreadRicePotatoesPasta extends Component {
 
     dropDownView = (
       <View>
-        <Dropdown 
+        <Dropdown
           label='Selecteer het graanproduct'
-          data={[{value:'Brood',},{value:'Pasta',},{value:'Rijst',},{value:'Aardappelen',},{value:'Granola of Havermout'}]} 
+          data={[{value:'Brood',},{value:'Pasta',},{value:'Rijst',},{value:'Aardappelen',},{value:'Granola of Havermout'},{value:'Cornflakes'}]} 
           value={this.state.type}
           onChangeText={(value)=>this.onTypeClick(value)}
           style={{
@@ -128,6 +129,9 @@ class BreadRicePotatoesPasta extends Component {
         setProgress={this.props.setProgress}
         connection={this.props.connection}
         setConnection={this.props.setConnection}
+        min={20}
+        max={110}
+        scrollTo={this.scrollTo}
       >
         <View
           style={{

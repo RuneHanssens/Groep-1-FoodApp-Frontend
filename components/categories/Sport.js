@@ -63,6 +63,8 @@ class Sport extends Component {
       </View>
     )
 
+   
+
     return (
       <Category
             ref={'child'}
@@ -81,6 +83,9 @@ class Sport extends Component {
             setProgress={this.props.setProgress}
             connection={this.props.connection}
             setConnection={this.props.setConnection}
+            min={100}
+            max={1000}
+            scrollTo={this.props.scrollTo}
           >
             <View
               style={{

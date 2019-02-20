@@ -1,68 +1,46 @@
 import React, { Component } from "react"
+import { Dropdown } from 'react-native-material-dropdown'
+import AmountInput from "./../AmountInput"
 import {
   View,
   StyleSheet,
   Image
 } from "react-native"
 import Category from './Category'
-import AmountInput from "./../AmountInput"
-
-class Fruits extends Component {
+class Rest extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      amountOfFruit:0
     }
   }
 
-  setAmountOfFruit = (value) =>{
-    this.setState({
-      amountOfFruit:value
-    })
-  }
-
-  setProgress = (value) =>{
-    this.setState({
-      progress:value
-    })
-  }
-
   reset = () =>{
-    this.setState({
-      amountOfFruit:0
-    })
-  }
   
-  render() {
-    dropDownView = (
-      <View>
-        <AmountInput
-          value={this.state.amountOfFruit}
-          setValue={this.setAmountOfFruit}
-        />
-      </View>
-    )
+}
 
+  render() {
     return (
       <Category
             ref={'child'}
-            name={"Fruit"}
+            name={"Rest groep"}
             progress={this.props.progress}
             duration={500}
-            fillColor={"#7e9b4e"}
-            barColor={"#758e48"}
+            fillColor={"#B43C25"}
+            barColor={"#99311d"}
+            style={{marginBottom: 30,}}
             clickEvent={this.props.clickEvent}
-            dropDownView={dropDownView}
-            data={{amount:this.state.amountOfFruit}}
-            apiUrl={'fruit'}
+            dropDownView={null}
+            data={null}
+            apiUrl={'dairyfishpoultry'}
             reset={this.reset}
             setProgress={this.props.setProgress}
             connection={this.props.connection}
             setConnection={this.props.setConnection}
-            min={100}
-            max={400}
+            min={40}
+            max={110}
             scrollTo={this.props.scrollTo}
           >
+
             <View
               style={{
                 flex: 1,
@@ -72,17 +50,21 @@ class Fruits extends Component {
             >
               <Image
                 style={{ width: 50, height: 50 }}
-                source={require("../../images/apple.png")}
+                source={require("../../images/burger.png")}
               />
               <Image
                 style={{ width: 50, height: 50 }}
-                source={require("../../images/pear.png")}        
+                source={require("../../images/cheers.png")}        
               />
                <Image
                 style={{ width: 50, height: 50 }}
-                source={require("../../images/cherries.png")}        
+                source={require("../../images/pizza.png")}        
               />
-            </View>
+              <Image
+                style={{ width: 50, height: 50 }}
+                source={require("../../images/can.png")}
+              />
+            </View>    
           </Category>
     )
   }
@@ -91,4 +73,4 @@ class Fruits extends Component {
 const styles = StyleSheet.create({
 
 })
-export default Fruits
+export default Rest

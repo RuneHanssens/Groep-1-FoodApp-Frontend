@@ -67,6 +67,9 @@ class Vegetables extends Component {
             clickEvent={this.props.clickEvent}
             connection={this.props.connection}
             setConnection={this.props.setConnection}
+            min={100}
+            max={400}
+            scrollTo={this.props.scrollTo}
           >
             <View
               style={{

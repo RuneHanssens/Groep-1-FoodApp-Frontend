@@ -5,7 +5,9 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  Button
+  Button,
+  UIManager,
+  findNodeHandle
 } from "react-native";
 
 import Vegetables from './../components/categories/Vegetables.js';
@@ -18,7 +20,7 @@ import BreadRicePotatoesPasta from './../components/categories/BreadRicePotatoes
 import Sport from './../components/categories/Sport';
 import ConnectionWarning from './../components/ConnectionWarning';
 import Header from './../components/Header';
-import Fade from './../components/Fade';
+import Rest from './../components/categories/Rest';
 
 export default class DayScreen extends React.Component {
   constructor(props) {
@@ -121,36 +123,61 @@ export default class DayScreen extends React.Component {
     })
   }
 
+  setFishEtcProgress = (value) =>{
+    this.setState({
+      fishEtcProgress:value
+    })
+  }
+ 
+  setMeatProgress = (value) =>{
+    this.setState({
+      redMeatProgress:value
+    })
+  }
+
+  scrollToCategory = (item) =>{
+    item.measure((x, y, width, height) =>{
+      console.log(y)
+    })
+    this.refs.categoryScrollView.scrollTo(this.refs.vegetables)
+  }
+
   render() {
     let connectionWarning
     if(!this.props.screenProps.connection){
         connectionWarning = <ConnectionWarning checkConnection={this.props.screenProps.checkConnection}/>
     }
     return (
-      <View style={styles.mainView}>
+      <View ref='view' style={styles.mainView}>
         <Header text={'Vandaag'}/>
-        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle}>
+        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle} ref={'categoryScrollView'}>
           <Sport 
             progress={this.state.sportsProgress} 
             clickEvent={this.categoryClickEvent} 
             ref={'sport'} 
             connection={this.props.screenProps.connection} 
             setConnection={this.props.screenProps.setConnection} 
-            setProgress={this.setSportProgress}/>
+            setProgress={this.setSportProgress}
+            scrollTo={this.scrollToCategory}
+          />
           <Water 
-          progress={this.state.waterProgress} 
+            progress={this.state.waterProgress} 
             clickEvent={this.categoryClickEvent}
             ref={'water'}
             connection={this.props.screenProps.connection}
             setProgress={this.setWaterProgress}
-            setConnection={this.props.screenProps.setConnection}/>
+            setConnection={this.props.screenProps.setConnection}
+            scrollTo={this.scrollToCategory}
+            />
           <Vegetables
             progress={this.state.vegetablesProgress}
             clickEvent={this.categoryClickEvent}
             ref={'vegetables'}
             connection={this.props.screenProps.connection}
             setConnection={this.props.screenProps.setConnection}
-            setProgress={this.setVegetablesProgress}/>
+            setProgress={this.setVegetablesProgress}
+            scrollTo={this.scrollToCategory}
+            />
           <Fruits
             progress={this.state.fruitsProgress}
             clickEvent={this.categoryClickEvent}
@@ -158,6 +185,7 @@ export default class DayScreen extends React.Component {
             connection={this.props.screenProps.connection}
             setConnection={this.props.screenProps.setConnection}
             setProgress={this.setFruitsProgress}
+            scrollTo={this.scrollToCategory}
             />
           <Nuts
             progress={this.state.nutsProgress}
@@ -165,8 +193,8 @@ export default class DayScreen extends React.Component {
             ref={'nuts'}
             connection={this.props.screenProps.connection}
             setConnection={this.props.screenProps.setConnection}
-            progress={this.state.nutsProgress}
             setProgress={this.setNutsProgress}
+            scrollTo={this.scrollToCategory}
             />
           <BreadRicePotatoesPasta
             progress={this.state.cerealProgress}
@@ -174,21 +202,36 @@ export default class DayScreen extends React.Component {
             ref={'cereal'}
             connection={this.props.screenProps.connection}
             setConnection={this.props.screenProps.setConnection}
-            progress={this.state.cerealProgress}
             setProgress={this.setCerealProgress}
+            scrollTo={this.scrollToCategory}
             />
           <FishMilkEggsPoultry
             progress={this.state.fishEtcProgress}
             clickEvent={this.categoryClickEvent}
             ref={'fishEtc'}
             connection={this.props.screenProps.connection}
-            setConnection={this.props.screenProps.setConnection}/>
+            setConnection={this.props.screenProps.setConnection}
+            setProgress={this.setFishEtcProgress}
+            scrollTo={this.scrollToCategory}
+            />
           <RedMeat
             progress={this.state.redMeatProgress}
             clickEvent={this.categoryClickEvent}
             ref={'redMeat'}
             connection={this.props.screenProps.connection}
-            setConnection={this.props.screenProps.setConnection}/>
+            setConnection={this.props.screenProps.setConnection}
+            setProgress={this.setMeatProgress}
+            scrollTo={this.scrollToCategory}
+            />
+          <Rest
+            progress={50}
+            clickEvent={this.categoryClickEvent}
+            ref={'rest'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}
+            setProgress={null}
+            scrollTo={this.scrollToCategory}
+          />
         </ScrollView>
         {connectionWarning}
       </View>

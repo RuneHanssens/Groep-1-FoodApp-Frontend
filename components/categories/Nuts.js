@@ -69,6 +69,9 @@ class Nuts extends Component {
             clickEvent={this.props.clickEvent}
             connection={this.props.connection}
             setConnection={this.props.setConnection}
+            min={0}
+            max={110}
+            scrollTo={this.props.scrollTo}
           >
             <View
               style={{

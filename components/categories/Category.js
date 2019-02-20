@@ -33,6 +33,7 @@ class Category extends Component {
 
   onClick = () => {
     this.props.clickEvent(this)
+    //this.props.scrollTo()
     let clicked = !this.state.clicked
     this.setState({
       clicked
@@ -120,6 +121,8 @@ class Category extends Component {
               alignSelf: "center",
               backgroundColor: "#fff",
               borderRadius: 10,
+              marginTop:20,
+              marginBottom:5,
               
             }}
           >
@@ -148,14 +151,22 @@ class Category extends Component {
           borderRadius,
           alignItems: "center",
           width: "100%",
-          marginTop: 20,
+          marginTop: 30,
         }, 
         this.props.style,
-        this.props.progress >= 100
+        this.props.progress >= this.props.min
           ? {
+            shadowOffset:{  width: 0,  height: 0,  },
+            shadowColor: '#32913a',
+            shadowOpacity: 2,
+            elevation:100,
+            shadowRadius:10
             }
-          : {
-            }
+          : {},
+        this.props.progress >= this.props.max
+            ?{
+              shadowColor: '#bc4b09'
+            }:{}
       ]}
       >
         <View
