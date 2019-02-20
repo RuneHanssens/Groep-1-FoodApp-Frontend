@@ -34,7 +34,7 @@ export default class ConnectionWarning extends React.Component {
                     width:'90%',
                 }}
             >
-                Controleer je internetverbinding. Indien het probleem blijft contacteer je begeleider.
+                Geen verbinding met de server. Controleer je internetverbinding.
             </Text>
             <Button title='Probeer opnieuw' onPress={this.props.checkConnection}/>
         </View>

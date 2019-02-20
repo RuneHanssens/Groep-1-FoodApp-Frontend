@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { Dropdown } from 'react-native-material-dropdown'
 import {
   View,
   StyleSheet,
@@ -9,26 +10,77 @@ class Sport extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      progress:0
+      type:'Wandelen',
+      time:30,
     }
   }
 
-  setProgress = (value) =>{
+  reset = () =>{
     this.setState({
-      progress:value
+      type:'Wandelen',
+      time:30,
     })
   }
 
   render() {
+    let sportData =
+    dropDownView = (
+      <View>
+        <Dropdown 
+          onChangeText={(value) => this.setState({type:value})}
+          label='Selecteer de sport'
+          data={[{value:'Wandelen'},{value:'Lopen'},{value:'Zwemmen'},{value:'Fietsen'},{value:'Anders'}]}
+          value={this.state.type}
+          style={{
+            color:'#000',
+            fontSize: 20,
+          }}
+          itemTextStyle={{
+            alignSelf:'center',
+          }}
+          containerStyle={{
+            width:'85%',
+            alignSelf: 'center',
+          }}
+          />
+          <Dropdown 
+          onChangeText={(value) => this.setState({time:value})}
+          label='Selecteer het aantal minuten'
+          data={[{value:30},{value:60}]} 
+          value={this.state.time}
+          style={{
+            color:'#000',
+            fontSize: 20,
+          }}
+          itemTextStyle={{
+            alignSelf:'center',
+          }}
+          containerStyle={{
+            width:'85%',
+            alignSelf: 'center',
+          }}
+          />
+      </View>
+    )
+
     return (
       <Category
             ref={'child'}
             name={"Sport"}
-            progress={this.state.progress}
+            progress={this.props.progress}
             duration={500}
             fillColor={"#e5e7ea"}
-            barColor={"#dcdee2"}
+            barColor={"#c6c9ce"}
             clickEvent={this.props.clickEvent}
+            dropDownView={dropDownView}
+            data={{
+                type:this.state.type,
+                time:this.state.time}}
+            apiUrl={'movement'}
+            reset={this.reset}
+            setProgress={this.props.setProgress}
+            connection={this.props.connection}
+            setConnection={this.props.setConnection}
           >
             <View
               style={{

@@ -5,6 +5,7 @@ import {
   View,
   Animated,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native"
 
 class Category extends Component {
@@ -13,6 +14,7 @@ class Category extends Component {
     this.state = {
       height: 0,
       clicked: false,
+      isLoading: false,
     }
   }
 
@@ -47,29 +49,45 @@ class Category extends Component {
 
   submit = () => {
     this.onSubmit()
-    this.setState({
-      clicked: false
-    })
   }
 
   onSubmit = async () =>{
-    await fetch(`http://foodapp-backend.serveo.net/api/day/${this.props.apiUrl}`, {
-      method: "POST",
-      body: JSON.stringify(this.props.data),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(console.log("then callback"))
-
-    this.props.reset()
-
-    let response = await fetch(
-      `http://foodapp-backend.serveo.net/api/day/${this.props.apiUrl}/points`
-    )
-    
-    let responseData = await response.json()
-    
-    this.props.setProgress(responseData)
+    this.setState({
+      isLoading:true
+    })
+    if(this.props.connection){
+      console.log('submitting category data')
+      console.log(this.props.data)
+      let postResponse = await fetch(`http://foodapp-backend.serveo.net/api/day/${this.props.apiUrl}`, {
+        method: "POST",
+        body: JSON.stringify(this.props.data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      console.log(postResponse)
+      if(postResponse.status == 200){
+        this.setState({
+          isLoading:false
+        })
+        //other animation
+        this.props.reset()
+        let response = await fetch(
+          `http://foodapp-backend.serveo.net/api/day/${this.props.apiUrl}/points`
+        )
+        console.log(response)
+        let responseData = await response.json()
+        this.props.setProgress(responseData)
+      }else{
+        this.props.setConnection(false)
+        this.setState({
+          isLoading:false
+        })
+      } 
+    }
+    this.setState({
+      clicked: false
+    })
   }
 
   render() {
@@ -82,31 +100,44 @@ class Category extends Component {
     })
 
     let dropDownView
-    let confirmButton
+    let confirm
+    let loading
     if (this.state.clicked) {
       dropDownView = this.props.dropDownView;
-      confirmButton = (
-        <TouchableOpacity
-          onPress={this.submit}
+      confirm = (
+        <View
           style={{
-            alignSelf: "center",
-            backgroundColor: "#fff",
-            borderRadius: 10
+            flex:1,
+            flexDirection:'row',
+            justifyContent:'space-evenly',
+            alignItems:'center'
           }}
         >
-          <Text
+          <ActivityIndicator hidesWhenStopped={true} animating={false} size='large'/>
+          <TouchableOpacity
+            onPress={this.submit}
             style={{
-              fontSize: 20,
-              textAlign: "center",
-              color: fillColor,
-              padding: 10
+              alignSelf: "center",
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              
             }}
           >
-            Opslaan
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                color: '#000',
+                padding: 10
+              }}
+            >
+              Opslaan
+            </Text>
+          </TouchableOpacity>
+          <ActivityIndicator hidesWhenStopped={true} animating={this.state.isLoading} color={'#fff'} size='large'/>
+        </View>
       )
-    }
+    } 
 
     return (
       <TouchableOpacity
@@ -118,7 +149,14 @@ class Category extends Component {
           alignItems: "center",
           width: "100%",
           marginTop: 20,
-        }, this.props.style]}
+        }, 
+        this.props.style,
+        this.props.progress >= 100
+          ? {
+            }
+          : {
+            }
+      ]}
       >
         <View
           style={[
@@ -138,7 +176,7 @@ class Category extends Component {
             },
             this.props.progress >= 100
               ? {
-                  borderRadius
+                  borderRadius,
                 }
               : {
                   borderTopLeftRadius: borderRadius,
@@ -171,7 +209,7 @@ class Category extends Component {
           >
             {this.props.children}
             {dropDownView}
-            {confirmButton}
+            {confirm}
           </View>
         </View>
       </TouchableOpacity>

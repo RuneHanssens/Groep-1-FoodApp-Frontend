@@ -4,8 +4,8 @@ import {
   View,
   ScrollView,
   Text,
-  AppState,
-  TouchableOpacity
+  TouchableOpacity,
+  Button
 } from "react-native";
 
 import Vegetables from './../components/categories/Vegetables.js';
@@ -18,12 +18,12 @@ import BreadRicePotatoesPasta from './../components/categories/BreadRicePotatoes
 import Sport from './../components/categories/Sport';
 import ConnectionWarning from './../components/ConnectionWarning';
 import Header from './../components/Header';
+import Fade from './../components/Fade';
 
 export default class DayScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      appState: AppState.currentState,
       waterProgress:0,
       vegetablesProgress:0,
       fruitsProgress:0,
@@ -36,38 +36,37 @@ export default class DayScreen extends React.Component {
   }
 
   componentDidMount = () =>{
-    AppState.addEventListener('change', this._handleAppStateChange)
+    console.log('DayScreen mounted')
     this.loadProgress()
   }
 
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange)
-  }
-
-  _handleAppStateChange = (nextAppState) => {
-    if (
-      this.state.appState.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      this.loadProgress()
+  componentDidUpdate = (prevProps, prevState) =>{
+    console.log('updated')
+    if(
+      (this.props.screenProps.connection && this.props.screenProps.connectionChecked != prevProps.screenProps.connectionChecked) 
+      || 
+      (prevProps.screenProps.appState == 'background' && this.props.screenProps.appState == 'active' && this.props.screenProps.connection))
+    {
+      this.props.screenProps.checkConnection(this.loadProgress)
     }
-    this.setState({appState: nextAppState})
   }
 
   loadProgress = async () => {
-    if(this.props.screenProps.connection){
+    console.log('load progress check')
+    if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
         console.log('load progress')
         let response = await fetch('http://foodapp-backend.serveo.net/api/day/points')
         let data = await response.json()
         console.log(data)
         this.setState({
-        waterProgress:data.WATER,
-        vegetablesProgress:data.VEGETABLE,
-        fruitsProgress:data.FRUIT,
-        nutsProgress:data.NUTS,
-        cerealProgress:data.STARCHPRODUCT,
-        fishEtcProgress:data.DAIRYFISHPOULTRY,
-        redMeatProgress:data.FATTYFOOD,
+          sportsProgress:data.MOVEMENT,
+          waterProgress:data.WATER,
+          vegetablesProgress:data.VEGETABLE,
+          fruitsProgress:data.FRUIT,
+          nutsProgress:data.NUTS,
+          cerealProgress:data.STARCHPRODUCT,
+          fishEtcProgress:data.DAIRYFISHPOULTRY,
+          redMeatProgress:data.FATTYFOOD,
         })
     }else{
         console.log('Cancelled loadProgress: no connection to server')
@@ -92,6 +91,36 @@ export default class DayScreen extends React.Component {
     //TODO andere categories
   }
 
+  setSportProgress = (value) =>{
+    this.setState({
+      sportsProgress:value
+    })
+  }
+
+  setVegetablesProgress = (value) =>{
+    this.setState({
+      vegetablesProgress:value
+    })
+  }
+
+  setFruitsProgress = (value) =>{
+    this.setState({
+      fruitsProgress:value
+    })
+  }
+
+  setNutsProgress = (value) =>{
+    this.setState({
+      nutsProgress:value
+    })
+  }
+
+  setCerealProgress = (value) =>{
+    this.setState({
+      cerealProgress:value
+    })
+  }
+
   render() {
     let connectionWarning
     if(!this.props.screenProps.connection){
@@ -101,14 +130,65 @@ export default class DayScreen extends React.Component {
       <View style={styles.mainView}>
         <Header text={'Vandaag'}/>
         <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle}>
-          <Sport progress={this.state.sportsProgress} clickEvent={this.categoryClickEvent} ref={'sport'}/>
-          <Water progress={this.state.waterProgress} clickEvent={this.categoryClickEvent} ref={'water'}/>
-          <Vegetables progress={this.state.vegetablesProgress} clickEvent={this.categoryClickEvent} ref={'vegetables'}/>
-          <Fruits progress={this.state.fruitsProgress} clickEvent={this.categoryClickEvent} ref={'fruits'}/>
-          <Nuts progress={this.state.nutsProgress} clickEvent={this.categoryClickEvent} ref={'nuts'}/>
-          <BreadRicePotatoesPasta progress={this.state.cerealProgress} clickEvent={this.categoryClickEvent} ref={'cereal'}/>
-          <FishMilkEggsPoultry progress={this.state.fishEtcProgress} clickEvent={this.categoryClickEvent} ref={'fishEtc'}/>
-          <RedMeat progress={this.state.redMeatProgress} clickEvent={this.categoryClickEvent} ref={'redMeat'}/>    
+          <Sport 
+            progress={this.state.sportsProgress} 
+            clickEvent={this.categoryClickEvent} 
+            ref={'sport'} 
+            connection={this.props.screenProps.connection} 
+            setConnection={this.props.screenProps.setConnection} 
+            setProgress={this.setSportProgress}/>
+          <Water 
+          progress={this.state.waterProgress} 
+            clickEvent={this.categoryClickEvent}
+            ref={'water'}
+            connection={this.props.screenProps.connection}
+            setProgress={this.setWaterProgress}
+            setConnection={this.props.screenProps.setConnection}/>
+          <Vegetables
+            progress={this.state.vegetablesProgress}
+            clickEvent={this.categoryClickEvent}
+            ref={'vegetables'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}
+            setProgress={this.setVegetablesProgress}/>
+          <Fruits
+            progress={this.state.fruitsProgress}
+            clickEvent={this.categoryClickEvent}
+            ref={'fruits'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}
+            setProgress={this.setFruitsProgress}
+            />
+          <Nuts
+            progress={this.state.nutsProgress}
+            clickEvent={this.categoryClickEvent}
+            ref={'nuts'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}
+            progress={this.state.nutsProgress}
+            setProgress={this.setNutsProgress}
+            />
+          <BreadRicePotatoesPasta
+            progress={this.state.cerealProgress}
+            clickEvent={this.categoryClickEvent}
+            ref={'cereal'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}
+            progress={this.state.cerealProgress}
+            setProgress={this.setCerealProgress}
+            />
+          <FishMilkEggsPoultry
+            progress={this.state.fishEtcProgress}
+            clickEvent={this.categoryClickEvent}
+            ref={'fishEtc'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}/>
+          <RedMeat
+            progress={this.state.redMeatProgress}
+            clickEvent={this.categoryClickEvent}
+            ref={'redMeat'}
+            connection={this.props.screenProps.connection}
+            setConnection={this.props.screenProps.setConnection}/>
         </ScrollView>
         {connectionWarning}
       </View>

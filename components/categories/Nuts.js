@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import RadioForm from 'react-native-simple-radio-button'
 import {
   View,
   StyleSheet,
@@ -9,7 +10,7 @@ class Nuts extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      progress:0
+      salted:false
     }
   }
 
@@ -19,16 +20,55 @@ class Nuts extends Component {
     })
   }
 
+  reset = () =>{
+    this.setState({
+      salted:false
+    })
+  }
+
   render() {
+    let radio_props = [
+      {label: 'Natuur', value: false },
+      {label: 'Gezouten Gekruid of Gesuikerd', value: true },
+    ]
+
+    dropDownView = (
+      <View
+        style={{
+          marginTop:20,
+          marginBottom:5,
+          alignSelf:'center'
+        }}
+      >
+        <RadioForm
+          radio_props={radio_props}
+          initial={0}
+          onPress={(value) => {this.setState({salted:value})}}
+          buttonColor={'#fff'}
+          selectedButtonColor={'#fff'}
+          labelColor={'#fff'}
+          selectedLabelColor={'#fff'}
+          buttonSize={30}
+        />
+      </View>
+    )
+
     return (
       <Category
             ref={'child'}
             name={"Noten"}
-            progress={this.state.progress}
+            progress={this.props.progress}
             duration={500}
             fillColor={"#96B057"}
             barColor={"#809946"}
+            dropDownView={dropDownView}
+            data={{salted:this.state.salted}}
+            apiUrl={'nuts'}
+            reset={this.reset}
+            setProgress={this.props.setProgress}
             clickEvent={this.props.clickEvent}
+            connection={this.props.connection}
+            setConnection={this.props.setConnection}
           >
             <View
               style={{

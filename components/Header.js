@@ -14,6 +14,8 @@ export default class Header extends React.Component {
           shadowOffset:{  width: 5,  height: 4,  },
           shadowColor: 'black',
           shadowOpacity: 0.1,
+          elevation: 10,
+          zIndex:10,
             }}
         >
             <Text style={{

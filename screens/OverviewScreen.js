@@ -16,7 +16,7 @@ export default class DayScreen extends React.Component {
       >
         <Header text={'Overzicht'}/>
         <Text
-            style={{textAlign:'center'}}
+            style={{textAlign:'center', alignSelf: 'center', marginTop: 200,}}
         >Hier komt de overzichtspagina per week/maand/...</Text>
       </View>
     )

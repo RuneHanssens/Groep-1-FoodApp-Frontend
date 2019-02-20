@@ -10,33 +10,71 @@ class BreadRicePotatoesPasta extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      progress:0
+      type:'Brood',
+      subType:'Wit',
+      typeIndex: 0
     }
   }
 
-  setProgress = (value) =>{
+  reset = () =>{
+    this.state = {
+      type:'Brood',
+      subType:'Wit',
+      typeIndex: 0
+    }
+  }
+
+  subTypeList = () =>{
+    return ([
+      [{value:'Wit'},{value:'Donker'}],
+      [{value:'Wit'},{value:'Volkoren'}],
+      [{value:'Gekookt'},{value:'Gebakken'},{value:'Gratin'},{value:'Frieten'}]])
+  }
+
+  onTypeClick = (value) =>{
+    let index
+    switch (value) {
+      case 'Brood':
+        index = 0
+        break;
+      case 'Rijst':
+      index = 1
+      break;
+      case 'Aardappelen':
+      index = 2
+      break;
+      case 'Pasta':
+      index = 1
+      break;
+      case 'Granola of Havermout':
+      index = null
+      break;
+      default:
+      index = null
+        break;
+    }
+    
+    if(index != null){
+      subType = this.subTypeList()[index][0].value
+    }else{
+      subType = null
+    }
     this.setState({
-      progress:value
+      typeIndex:index,
+      type:value,
+      subType: subType
     })
   }
 
   render() {
-    let data = [{
-      value: 'Brood',
-    }, {
-      value: 'Pasta',
-    }, {
-      value: 'Rijst',
-    },{
-      value:'Aardappelen',
-    }]
-
-    dropDownView = (
-      <View>
+    let subTypeInput
+    if (this.state.typeIndex != null){
+      subTypeInput = (
         <Dropdown 
-          label='Selecteer het graanproduct'
-          data={data} 
-          value={data[0].value}
+          label='Selecteer het specifieke type'
+          data={this.subTypeList()[this.state.typeIndex]} 
+          value={this.state.subType}
+          onChangeText={(value)=>this.setState({subType:value})}
           style={{
             color:'#fff',
             fontSize: 20,
@@ -48,22 +86,48 @@ class BreadRicePotatoesPasta extends Component {
             width:'85%',
             alignSelf: 'center',
           }}
-          pickerStyle={{
-            
+          />
+      )
+    }
+
+    dropDownView = (
+      <View>
+        <Dropdown 
+          label='Selecteer het graanproduct'
+          data={[{value:'Brood',},{value:'Pasta',},{value:'Rijst',},{value:'Aardappelen',},{value:'Granola of Havermout'}]} 
+          value={this.state.type}
+          onChangeText={(value)=>this.onTypeClick(value)}
+          style={{
+            color:'#fff',
+            fontSize: 20,
+          }}
+          itemTextStyle={{
+            alignSelf:'center',
+          }}
+          containerStyle={{
+            width:'85%',
+            alignSelf: 'center',
           }}
           />
+          {subTypeInput}
       </View>
     )
     return (
       <Category
         ref={'child'}
         name={"Graanproducten"}
-        progress={this.state.progress}
+        progress={this.props.progress}
         duration={500}
         fillColor={"#96B057"}
         barColor={"#809946"}
-        dropDownView={dropDownView}
         clickEvent={this.props.clickEvent}
+        dropDownView={dropDownView}
+        data={{type:this.state.type, subType:this.state.subType}}
+        apiUrl={'starchproduct'}
+        reset={this.reset}
+        setProgress={this.props.setProgress}
+        connection={this.props.connection}
+        setConnection={this.props.setConnection}
       >
         <View
           style={{

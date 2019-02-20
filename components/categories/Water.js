@@ -38,6 +38,7 @@ class Water extends Component {
     )
 
     return (
+      
       <Category
         ref={'child'}
         name={"Water"}
@@ -50,6 +51,8 @@ class Water extends Component {
         reset={this.reset}
         setProgress={this.props.setProgress}
         clickEvent={this.props.clickEvent}
+        connection={this.props.connection}
+        setConnection={this.props.setConnection}
       >
         <View
           style={{

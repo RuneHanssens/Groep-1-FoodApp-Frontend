@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import RadioForm from 'react-native-simple-radio-button'
 import {
   View,
   StyleSheet,
@@ -9,7 +10,7 @@ class Vegetables extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      progress:0
+      moreThan400g:false,
     }
   }
 
@@ -19,16 +20,53 @@ class Vegetables extends Component {
     })
   }
 
+  reset = () =>{
+    this.setState({
+      moreThan400g:false
+    })
+  }
   render() {
+    let radio_props = [
+      {label: 'Minder dan 400 gram', value: false },
+      {label: 'Meer dan 400 gram', value: true }
+    ]
+
+    dropDownView = (
+      <View
+        style={{
+          marginTop:20,
+          marginBottom:5,
+          alignSelf:'center'
+        }}
+      >
+        <RadioForm
+          radio_props={radio_props}
+          initial={0}
+          onPress={(value) => {this.setState({moreThan400g:value})}}
+          buttonColor={'#fff'}
+          selectedButtonColor={'#fff'}
+          labelColor={'#fff'}
+          selectedLabelColor={'#fff'}
+          buttonSize={30}
+        />
+      </View>
+    )
     return (
       <Category
             ref={'child'}
             name={"Groenten"}
-            progress={this.state.progress}
+            progress={this.props.progress}
             duration={500}
             fillColor={"#7e9b4e"}
             barColor={"#758e48"}
+            dropDownView={dropDownView}
+            data={{more:this.state.moreThan400g}}
+            apiUrl={'vegetable'}
+            reset={this.reset}
+            setProgress={this.props.setProgress}
             clickEvent={this.props.clickEvent}
+            connection={this.props.connection}
+            setConnection={this.props.setConnection}
           >
             <View
               style={{

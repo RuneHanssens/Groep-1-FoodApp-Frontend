@@ -5,12 +5,20 @@ import {
   Image
 } from "react-native"
 import Category from './Category'
+import AmountInput from "./../AmountInput"
+
 class Fruits extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      progress:0
+      amountOfFruit:0
     }
+  }
+
+  setAmountOfFruit = (value) =>{
+    this.setState({
+      amountOfFruit:value
+    })
   }
 
   setProgress = (value) =>{
@@ -18,16 +26,39 @@ class Fruits extends Component {
       progress:value
     })
   }
+
+  reset = () =>{
+    this.setState({
+      amountOfFruit:0
+    })
+  }
+  
   render() {
+    dropDownView = (
+      <View>
+        <AmountInput
+          value={this.state.amountOfFruit}
+          setValue={this.setAmountOfFruit}
+        />
+      </View>
+    )
+
     return (
       <Category
             ref={'child'}
             name={"Fruit"}
-            progress={this.state.progress}
+            progress={this.props.progress}
             duration={500}
             fillColor={"#7e9b4e"}
             barColor={"#758e48"}
             clickEvent={this.props.clickEvent}
+            dropDownView={dropDownView}
+            data={{amount:this.state.amountOfFruit}}
+            apiUrl={'fruit'}
+            reset={this.reset}
+            setProgress={this.props.setProgress}
+            connection={this.props.connection}
+            setConnection={this.props.setConnection}
           >
             <View
               style={{
