@@ -31,6 +31,10 @@ class FishMilkEggsPoultry extends Component {
     })
   }
 
+  scrollTo = (sender) => {
+    this.props.scrollTo('fishEtcView',sender)
+  }
+
   render() {
     let amountInput
     if(this.state.type == 'Eieren' || this.state.subType == 'Melk'){
@@ -69,7 +73,7 @@ class FishMilkEggsPoultry extends Component {
       <View>
         <Dropdown 
           label='Selecteer het product'
-          data={[{value:'Vis',},{value:'Kip',},{value:'Kalkoen',},{value:'Eieren',},{value:'Zuivelproducten'}]} 
+          data={[{value:'Vis',},{value:'Kip of Kalkoen',},{value:'Eieren',},{value:'Zuivelproducten'}]} 
           value={this.state.type}
           onChangeText={(value)=>this.setState({type:value, amount:0})}
           style={{
@@ -96,7 +100,7 @@ class FishMilkEggsPoultry extends Component {
             progress={this.props.progress}
             duration={500}
             fillColor={"#ADC460"}
-            barColor={"#9cb253"}
+            barColor={"#889b47"}
             clickEvent={this.props.clickEvent}
             dropDownView={dropDownView}
             data={this.state.type == 'Zuivelproducten' ? {type:this.state.type, subType:this.state.subType, amount:this.state.amount} : {type:this.state.type, amount:this.state.amount}}
@@ -107,7 +111,8 @@ class FishMilkEggsPoultry extends Component {
             setConnection={this.props.setConnection}
             min={40}
             max={110}
-            scrollTo={this.props.scrollTo}
+            scrollTo={this.scrollTo}
+            setPrev={this.props.setPrev}
           >
 
             <View

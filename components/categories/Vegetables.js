@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import RadioForm from 'react-native-simple-radio-button'
+import { CheckBox } from 'react-native-elements'
+
 import {
   View,
   StyleSheet,
@@ -11,6 +13,7 @@ class Vegetables extends Component {
     super(props)
     this.state = {
       moreThan400g:false,
+      outdoors:false,
     }
   }
 
@@ -22,9 +25,15 @@ class Vegetables extends Component {
 
   reset = () =>{
     this.setState({
-      moreThan400g:false
+      moreThan400g:false,
+      outdoors:false,
     })
   }
+
+  scrollTo = (sender) => {
+    this.props.scrollTo('vegetableView',sender)
+  }
+
   render() {
     let radio_props = [
       {label: 'Minder dan 400 gram', value: false },
@@ -49,6 +58,26 @@ class Vegetables extends Component {
           selectedLabelColor={'#fff'}
           buttonSize={30}
         />
+        <CheckBox
+          center
+          title='Buitenshuis'
+          checkedColor={'#fff'}
+          uncheckedColor={'#fff'}
+          size={30}
+          checked={this.state.outdoors}
+          onPress={() => this.setState({outdoors: !this.state.outdoors})}
+          containerStyle={{
+            backgroundColor:null,
+            borderWidth:0,
+            margin:0,
+            padding:0,
+            marginTop:10
+          }}
+          textStyle={{
+            color:'#fff',
+            fontWeight:'normal'
+          }}
+        />
       </View>
     )
     return (
@@ -58,9 +87,9 @@ class Vegetables extends Component {
             progress={this.props.progress}
             duration={500}
             fillColor={"#7e9b4e"}
-            barColor={"#758e48"}
+            barColor={"#5b7036"}
             dropDownView={dropDownView}
-            data={{more:this.state.moreThan400g}}
+            data={{more:this.state.moreThan400g, outdoors:this.state.outdoors}}
             apiUrl={'vegetable'}
             reset={this.reset}
             setProgress={this.props.setProgress}
@@ -69,7 +98,8 @@ class Vegetables extends Component {
             setConnection={this.props.setConnection}
             min={100}
             max={400}
-            scrollTo={this.props.scrollTo}
+            scrollTo={this.scrollTo}
+            setPrev={this.props.setPrev}
           >
             <View
               style={{

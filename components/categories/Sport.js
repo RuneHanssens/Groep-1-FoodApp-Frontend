@@ -22,6 +22,11 @@ class Sport extends Component {
     })
   }
 
+  scrollTo = () => {
+    this.props.scrollTo('sportView')
+  }
+
+
   render() {
     let sportData =
     dropDownView = (
@@ -85,7 +90,7 @@ class Sport extends Component {
             setConnection={this.props.setConnection}
             min={100}
             max={1000}
-            scrollTo={this.props.scrollTo}
+            scrollTo={this.scrollTo}
           >
             <View
               style={{

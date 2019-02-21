@@ -6,6 +6,7 @@ import {
   Animated,
   StyleSheet,
   ActivityIndicator,
+  Image,
 } from "react-native"
 
 class Category extends Component {
@@ -15,6 +16,7 @@ class Category extends Component {
       height: 0,
       clicked: false,
       isLoading: false,
+      key:null,
     }
   }
 
@@ -31,9 +33,9 @@ class Category extends Component {
     }
   }
 
+ 
   onClick = () => {
     this.props.clickEvent(this)
-    //this.props.scrollTo()
     let clicked = !this.state.clicked
     this.setState({
       clicked
@@ -142,6 +144,13 @@ class Category extends Component {
       )
     } 
 
+    let minMaxCheck
+    if(this.props.progress >= this.props.min && this.props.progress < this.props.max){
+        minMaxCheck = <Image style={{width:40,height:40}}source={require('../../images/checked.png')}/>
+    }else if (this.props.progress > this.props.max) {
+        minMaxCheck = <Image style={{width:40,height:40}}source={require('../../images/stop.png')}/>
+    }
+
     return (
       <TouchableOpacity
         onPress={this.onClick}
@@ -151,22 +160,9 @@ class Category extends Component {
           borderRadius,
           alignItems: "center",
           width: "100%",
-          marginTop: 30,
+          marginTop: 20,
         }, 
         this.props.style,
-        this.props.progress >= this.props.min
-          ? {
-            shadowOffset:{  width: 0,  height: 0,  },
-            shadowColor: '#32913a',
-            shadowOpacity: 2,
-            elevation:100,
-            shadowRadius:10
-            }
-          : {},
-        this.props.progress >= this.props.max
-            ?{
-              shadowColor: '#bc4b09'
-            }:{}
       ]}
       >
         <View
@@ -196,12 +192,23 @@ class Category extends Component {
           ]}
         />
         <View
+          key={this.state.key}
           style={styles.contentView}
           onLayout={event => {
+            if(this.state.clicked){
+              this.props.scrollTo()
+            }
             this.setState({
               height: event.nativeEvent.layout.height
+            },()=>{
             })
           }}
+        >
+        <View
+            style={{
+                flexDirection:'row',
+                justifyContent:'space-between',
+            }}
         >
           <Text
             style={{
@@ -213,6 +220,8 @@ class Category extends Component {
           >
             {name}
           </Text>
+          {minMaxCheck}
+        </View>
           <View
             style={{
               flexDirection: "column"

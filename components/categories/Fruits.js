@@ -32,6 +32,10 @@ class Fruits extends Component {
       amountOfFruit:0
     })
   }
+
+  scrollTo = (sender) => {
+    this.props.scrollTo('fruitView',sender)
+  }
   
   render() {
     dropDownView = (
@@ -50,7 +54,7 @@ class Fruits extends Component {
             progress={this.props.progress}
             duration={500}
             fillColor={"#7e9b4e"}
-            barColor={"#758e48"}
+            barColor={"#5b7036"}
             clickEvent={this.props.clickEvent}
             dropDownView={dropDownView}
             data={{amount:this.state.amountOfFruit}}
@@ -61,7 +65,8 @@ class Fruits extends Component {
             setConnection={this.props.setConnection}
             min={100}
             max={400}
-            scrollTo={this.props.scrollTo}
+            scrollTo={this.scrollTo}
+            setPrev={this.props.setPrev}
           >
             <View
               style={{

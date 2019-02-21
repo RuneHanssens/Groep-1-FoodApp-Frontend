@@ -26,11 +26,15 @@ class RedMeat extends Component {
     })
   }
 
+  scrollTo = (sender) => {
+    this.props.scrollTo('redMeatView',sender)
+  }
+
   render() {
     dropDownView = (
       <Dropdown 
           label='Selecteer het product'
-          data={[{value:'Rood Vlees',},{value:'Bewerkt Vlees',},{value:'Boter',}]} 
+          data={[{value:'Rood Vlees',},{value:'Bewerkt Vlees',},{value:'Boter',},{value:'Beleg',}]} 
           value={this.state.type}
           onChangeText={(value)=>this.setState({type:value})}
           style={{
@@ -53,8 +57,7 @@ class RedMeat extends Component {
             progress={this.props.progress}
             duration={500}
             fillColor={"#F7AC4B"}
-            barColor={"#ed9f3b"}
-            style={{marginBottom: 30,}}
+            barColor={"#d18b32"}
             clickEvent={this.props.clickEvent}
             dropDownView={dropDownView}
             data={{type:this.state.type}}
@@ -65,7 +68,8 @@ class RedMeat extends Component {
             setConnection={this.props.setConnection}
             min={0}
             max={50}
-            scrollTo={this.props.scrollTo}
+            scrollTo={this.scrollTo}
+            setPrev={this.props.setPrev}
           >
             <View
               style={{
