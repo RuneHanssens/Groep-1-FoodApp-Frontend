@@ -57,6 +57,10 @@ class Nuts extends Component {
       </View>
     )
 
+    let warningData = [{
+      data:{salted:true},message:'Gezoute nootjes zijn niet gezond!',
+    }]
+
     return (
       <Category
             ref={'child'}
@@ -77,6 +81,8 @@ class Nuts extends Component {
             max={110}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
+            warningData={warningData}
+            token={this.props.token}
           >
             <View
               style={{

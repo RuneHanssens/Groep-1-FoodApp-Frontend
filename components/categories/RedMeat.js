@@ -6,11 +6,14 @@ import {
   Image
 } from "react-native"
 import Category from './Category'
+import { CheckBox } from 'react-native-elements';
+
 class RedMeat extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      type:'Rood Vlees'
+      type:'Rood Vlees',
+      outdoors:false,
     }
   }
 
@@ -32,23 +35,45 @@ class RedMeat extends Component {
 
   render() {
     dropDownView = (
-      <Dropdown 
-          label='Selecteer het product'
-          data={[{value:'Rood Vlees',},{value:'Bewerkt Vlees',},{value:'Boter',},{value:'Beleg',}]} 
-          value={this.state.type}
-          onChangeText={(value)=>this.setState({type:value})}
-          style={{
-            color:'#fff',
-            fontSize: 20,
-          }}
-          itemTextStyle={{
-            alignSelf:'center',
-          }}
+      <View>
+        <Dropdown 
+            label='Selecteer het product'
+            data={[{value:'Rood Vlees',},{value:'Bewerkt Vlees',},{value:'Boter',},{value:'Beleg',}]} 
+            value={this.state.type}
+            onChangeText={(value)=>this.setState({type:value})}
+            style={{
+              color:'#fff',
+              fontSize: 20,
+            }}
+            itemTextStyle={{
+              alignSelf:'center',
+            }}
+            containerStyle={{
+              width:'85%',
+              alignSelf: 'center',
+            }}
+            />
+         <CheckBox
+          center
+          title='Buitenshuis'
+          checkedColor={'#fff'}
+          uncheckedColor={'#fff'}
+          size={30}
+          checked={this.state.outdoors}
+          onPress={() => this.setState({outdoors: !this.state.outdoors})}
           containerStyle={{
-            width:'85%',
-            alignSelf: 'center',
+            backgroundColor:null,
+            borderWidth:0,
+            margin:0,
+            padding:0,
+            marginTop:10
           }}
-          />
+          textStyle={{
+            color:'#fff',
+            fontWeight:'normal'
+          }}
+        />
+      </View>
     )
     return (
       <Category
@@ -60,7 +85,7 @@ class RedMeat extends Component {
             barColor={"#d18b32"}
             clickEvent={this.props.clickEvent}
             dropDownView={dropDownView}
-            data={{type:this.state.type}}
+            data={{type:this.state.type, outdoors:this.state.outdoors}}
             apiUrl={'fattyfood'}
             reset={this.reset}
             setProgress={this.props.setProgress}
@@ -70,6 +95,7 @@ class RedMeat extends Component {
             max={50}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
+            token={this.props.token}
           >
             <View
               style={{

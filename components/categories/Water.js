@@ -61,6 +61,7 @@ class Water extends Component {
         max={1000}
         scrollTo={this.scrollTo}
         setPrev={this.props.setPrev}
+        token={this.props.token}
       >
         <View
           style={{

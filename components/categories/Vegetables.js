@@ -100,6 +100,7 @@ class Vegetables extends Component {
             max={400}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
+            token={this.props.token}
           >
             <View
               style={{

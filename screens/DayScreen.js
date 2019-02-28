@@ -4,6 +4,8 @@ import {
   View,
   ScrollView,
   findNodeHandle,
+  Platform,
+  StatusBar
 } from "react-native";
 
 import Vegetables from './../components/categories/Vegetables.js';
@@ -17,7 +19,8 @@ import Sport from './../components/categories/Sport';
 import ConnectionWarning from './../components/ConnectionWarning';
 import Header from './../components/Header';
 import Rest from './../components/categories/Rest';
-import Category from './../components/categories/Category';
+
+import Global from './../Global'
 
 export default class DayScreen extends React.Component {
   constructor(props) {
@@ -32,28 +35,32 @@ export default class DayScreen extends React.Component {
       redMeatProgress:0,
       sportsProgress:0,
       restProgress:0,
-      prev:null,
     }
   }
+
   componentDidMount = () =>{
-    console.log('DayScreen mounted')
-    this.loadProgress()
-  }
-  componentDidUpdate = (prevProps, prevState) =>{
-    console.log('updated')
-    if(
-      (this.props.screenProps.connection && this.props.screenProps.connectionChecked != prevProps.screenProps.connectionChecked) 
-      || 
-      (prevProps.screenProps.appState == 'background' && this.props.screenProps.appState == 'active' && this.props.screenProps.connection))
-    {
-      this.props.screenProps.checkConnection(this.loadProgress)
+    console.log('Dayscreen mounted')
+    if(this.props.screenProps.appState == 'active' && this.props.screenProps.connection && this.props.screenProps.connectionChecked){
+      this.loadProgress()
     }
   }
+
+  componentDidUpdate = (prevProps, prevState) =>{
+    console.log('update')
+    if((prevProps.screenProps.appState == 'background' && this.props.screenProps.appState == 'active')){
+      console.log('hier!!!!!')
+      this.loadProgress()
+    }
+  }
+
   loadProgress = async () => {
-    console.log('load progress check')
     if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
-        console.log('load progress')
-        let response = await fetch('http://foodapp-backend.serveo.net/api/day/points')
+        console.log('Loading progress...')
+        let response = await fetch(`${Global.url}/api/user/day/points`,
+        {
+          headers: {
+          "Authorization":this.props.screenProps.token
+        }})
         let data = await response.json()
         console.log(data)
         this.setState({
@@ -71,11 +78,7 @@ export default class DayScreen extends React.Component {
         console.log('Cancelled loadProgress: no connection to server')
     }
   }
-  setPrev = (value) =>{
-    this.setState({
-      prev:value
-    })
-  }
+
   categoryClickEvent = (sender) =>{
     this.refs.water.refs.child.handleClickEvent(sender)
     this.refs.sport.refs.child.handleClickEvent(sender)
@@ -134,32 +137,23 @@ export default class DayScreen extends React.Component {
   }
 
   scrollToCategory = (category) =>{
-    /*setTimeout(()=>{
-      if(category == 'redMeatView' || category == 'restView'){
-        this.refs.categoryScrollView.scrollToEnd()
-      }else{
-        this.refs[category].measure((ox, oy, width, height, px, py)=>{
-          console.log(oy)
-          this.refs.categoryScrollView.scrollTo({y:oy})
-        })
-      }
-    })*/
-
-    this.refs[category].measureLayout(
-      findNodeHandle(this.refs.categoryScrollView),
-      (x, y) => {
-        this.refs.categoryScrollView.scrollTo({y})
-      }, 
-      function(error) {
-        console.log(error)
-      }
-    )
+    setTimeout(()=>{
+      this.refs[category].measureLayout(
+        findNodeHandle(this.refs.categoryScrollView),
+        (x, y) => {
+          this.refs.categoryScrollView.scrollTo({y})
+        }, 
+        function(error) {
+          console.log(error)
+        }
+      )
+    })
   }
 
   render() {
     let connectionWarning
     if(!this.props.screenProps.connection){
-        connectionWarning = <ConnectionWarning checkConnection={this.props.screenProps.checkConnection}/>
+        connectionWarning = <ConnectionWarning checkServer={this.props.screenProps.checkServer}/>
     }
     return (
       <View ref='view' style={styles.mainView}>
@@ -168,8 +162,6 @@ export default class DayScreen extends React.Component {
           <View
             ref={'sportView'}
             style={[{width:'100%'}, this.refs.sport ? this.refs.sport.refs.child.state.height : 0]}
-            renderToHardwareTextureAndroid={true}
-            collapsable={false}
           >
             <Sport 
               progress={this.state.sportsProgress} 
@@ -180,13 +172,12 @@ export default class DayScreen extends React.Component {
               setProgress={this.setSportProgress}
               scrollTo={this.scrollToCategory}
               y={this.state.sportsY}
+              token={this.props.screenProps.token}
             />
           </View>
           <View 
             ref={'waterView'}
             style={[{width:'100%'}, this.refs.water ? this.refs.water.refs.child.state.height : 0]}
-            renderToHardwareTextureAndroid={true}
-            onLayout={() => {}}
           >
             <Water 
               progress={this.state.waterProgress} 
@@ -197,13 +188,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               scrollTo={this.scrollToCategory}
               y={this.state.waterY}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'vegetableView'}
             style={[{width:'100%'}, this.refs.vegetables ? this.refs.vegetables.refs.child.state.height : 0]}
-            renderToHardwareTextureAndroid={true}
           >
             <Vegetables
               progress={this.state.vegetablesProgress}
@@ -213,13 +203,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setVegetablesProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'fruitView'}
             style={[{width:'100%'}, this.refs.fruits ? this.refs.fruits.refs.child.state.height : 0]} 
-            renderToHardwareTextureAndroid={true}
           >
             <Fruits
               progress={this.state.fruitsProgress}
@@ -229,13 +218,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setFruitsProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'nutsView'}
             style={[{width:'100%'}, this.refs.nuts ? this.refs.nuts.refs.child.state.height : 0]} 
-            renderToHardwareTextureAndroid={true} 
           >
             <Nuts
               progress={this.state.nutsProgress}
@@ -245,13 +233,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setNutsProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'cerealView'}
             style={[{width:'100%'}, this.refs.cereal ? this.refs.cereal.refs.child.state.height : 0]}
-            renderToHardwareTextureAndroid={true}
           >
             <BreadRicePotatoesPasta
               progress={this.state.cerealProgress}
@@ -261,13 +248,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setCerealProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'fishEtcView'}
             style={[{width:'100%'}, this.refs.fishEtc ? this.refs.fishEtc.refs.child.state.height : 0]}
-            renderToHardwareTextureAndroid={true}
           >
             <FishMilkEggsPoultry
               progress={this.state.fishEtcProgress}
@@ -277,13 +263,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setFishEtcProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'redMeatView'}
             style={[{width:'100%'}, this.refs.redMeat ? this.refs.redMeat.refs.child.state.height : 0]}
-            renderToHardwareTextureAndroid={true}
           >
             <RedMeat
               progress={this.state.redMeatProgress}
@@ -293,13 +278,12 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setMeatProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
               />
           </View>
           <View 
             ref={'restView'}
             style={[{width:'100%'}, this.refs.rest ? this.refs.rest.refs.child.state.height : 0]}  
-            renderToHardwareTextureAndroid={true}
           >
             <Rest
               progress={this.state.restProgress}
@@ -309,7 +293,7 @@ export default class DayScreen extends React.Component {
               setConnection={this.props.screenProps.setConnection}
               setProgress={this.setRestProgress}
               scrollTo={this.scrollToCategory}
-              setPrev={this.setPrev}
+              token={this.props.screenProps.token}
             />
           </View>
         </ScrollView>
@@ -331,7 +315,7 @@ const styles = StyleSheet.create({
   },
   mainView: {
     flex: 1,
-    paddingTop:30,
+    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.height,
   },
   scrollViewContentStyle: {
     alignItems: 'center',

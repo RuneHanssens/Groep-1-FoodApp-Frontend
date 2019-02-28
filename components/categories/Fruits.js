@@ -6,12 +6,13 @@ import {
 } from "react-native"
 import Category from './Category'
 import AmountInput from "./../AmountInput"
-
+import { CheckBox } from 'react-native-elements'
 class Fruits extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      amountOfFruit:0
+      amountOfFruit:0,
+      outdoors:false,
     }
   }
 
@@ -44,6 +45,26 @@ class Fruits extends Component {
           value={this.state.amountOfFruit}
           setValue={this.setAmountOfFruit}
         />
+        <CheckBox
+          center
+          title='Buitenshuis'
+          checkedColor={'#fff'}
+          uncheckedColor={'#fff'}
+          size={30}
+          checked={this.state.outdoors}
+          onPress={() => this.setState({outdoors: !this.state.outdoors})}
+          containerStyle={{
+            backgroundColor:null,
+            borderWidth:0,
+            margin:0,
+            padding:0,
+            marginTop:10
+          }}
+          textStyle={{
+            color:'#fff',
+            fontWeight:'normal'
+          }}
+        />
       </View>
     )
 
@@ -57,7 +78,7 @@ class Fruits extends Component {
             barColor={"#5b7036"}
             clickEvent={this.props.clickEvent}
             dropDownView={dropDownView}
-            data={{amount:this.state.amountOfFruit}}
+            data={{amount:this.state.amountOfFruit, outdoors:this.state.outdoors}}
             apiUrl={'fruit'}
             reset={this.reset}
             setProgress={this.props.setProgress}
@@ -67,6 +88,7 @@ class Fruits extends Component {
             max={400}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
+            token={this.props.token}
           >
             <View
               style={{

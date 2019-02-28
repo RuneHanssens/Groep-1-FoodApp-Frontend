@@ -7,13 +7,16 @@ import {
   Image
 } from "react-native"
 import Category from './Category'
+import { CheckBox } from 'react-native-elements';
+
 class FishMilkEggsPoultry extends Component {
   constructor(props) {
     super(props)
     this.state = {
       type:'Vis',
       amount: 0,
-      subType:'Hollandse Kaas'
+      subType:'Hollandse Kaas',
+      outdoors:false,
     }
   }
 
@@ -90,8 +93,32 @@ class FishMilkEggsPoultry extends Component {
           />
           {dairyInput}
           {amountInput}
+          <CheckBox
+          center
+          title='Buitenshuis'
+          checkedColor={'#fff'}
+          uncheckedColor={'#fff'}
+          size={30}
+          checked={this.state.outdoors}
+          onPress={() => this.setState({outdoors: !this.state.outdoors})}
+          containerStyle={{
+            backgroundColor:null,
+            borderWidth:0,
+            margin:0,
+            padding:0,
+            marginTop:10
+          }}
+          textStyle={{
+            color:'#fff',
+            fontWeight:'normal'
+          }}
+        />
       </View>
     )
+
+    let warningData = [{
+      data:{type:'Zuivelproducten', subType:'Hollandse Kaas'},message:'Kaas bevat veel vetten!',
+    }]
 
     return (
       <Category
@@ -103,7 +130,7 @@ class FishMilkEggsPoultry extends Component {
             barColor={"#889b47"}
             clickEvent={this.props.clickEvent}
             dropDownView={dropDownView}
-            data={this.state.type == 'Zuivelproducten' ? {type:this.state.type, subType:this.state.subType, amount:this.state.amount} : {type:this.state.type, amount:this.state.amount}}
+            data={this.state.type == 'Zuivelproducten' ? {type:this.state.type, subType:this.state.subType, amount:this.state.amount, outdoors:this.state.outdoors} : {type:this.state.type, amount:this.state.amount, outdoors:this.state.outdoors}}
             apiUrl={'dairyfishpoultry'}
             reset={this.reset}
             setProgress={this.props.setProgress}
@@ -113,6 +140,8 @@ class FishMilkEggsPoultry extends Component {
             max={110}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
+            warningData={warningData}
+            token={this.props.token}
           >
 
             <View

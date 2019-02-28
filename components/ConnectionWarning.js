@@ -3,6 +3,8 @@ import {
   View,
   Text,
   Button,
+  StyleSheet,
+  TouchableOpacity,
 } from "react-native"
 
 export default class ConnectionWarning extends React.Component {
@@ -11,6 +13,11 @@ export default class ConnectionWarning extends React.Component {
     this.state = {
     }
   }
+
+  check = () =>{
+
+  }
+
 
   render() {
     return (
@@ -36,7 +43,7 @@ export default class ConnectionWarning extends React.Component {
             >
                 Geen verbinding met de server. Controleer je internetverbinding.
             </Text>
-            <Button title='Probeer opnieuw' onPress={this.props.checkConnection}/>
+            <Button title='Probeer opnieuw' onPress={this.props.checkServer}/>
         </View>
     )
   }

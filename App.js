@@ -1,15 +1,32 @@
 import React from 'react'
-import {AppState,} from 'react-native'
-import {createBottomTabNavigator, createAppContainer} from 'react-navigation'
+import {AppState, AsyncStorage, ActivityIndicator, StyleSheet,View} from 'react-native'
+import {createBottomTabNavigator, createAppContainer, createStackNavigator} from 'react-navigation'
 
 import DayScreen from './screens/DayScreen'
 import OverviewScreen from './screens/OverviewScreen'
+import UserScreen from './screens/UserScreen'
+import LoginScreen from './screens/LoginScreen'
+import SignUpScreen from './screens/SignUpScreen'
+import SecureStore from 'expo'
 
 import { Ionicons } from 'react-native-vector-icons'
 
-const AppNav = createBottomTabNavigator({
+import Global from './Global'
+
+const LoggedOutApp = createStackNavigator({
+  Login:{
+    screen:LoginScreen,
+    navigationOptions: {
+      header: null
+    },
+  },
+  SignUp:{screen:SignUpScreen},
+})
+
+const LoggedInApp = createBottomTabNavigator({
   Vandaag:{screen:DayScreen},
-  Overzicht:{screen:OverviewScreen}
+  Overzicht:{screen:OverviewScreen},
+  Gebruiker: {screen:UserScreen},
 },
 {
   defaultNavigationOptions: ({ navigation }) => ({
@@ -21,6 +38,8 @@ const AppNav = createBottomTabNavigator({
         iconName = `ios-calendar`;
       } else if (routeName === 'Overzicht') {
         iconName = `ios-podium`;
+      } else if ( routeName ==='Gebruiker'){
+        iconName = `ios-person`
       }
       return <IconComponent name={iconName} size={25} color={tintColor} />
     },
@@ -34,16 +53,21 @@ const AppNav = createBottomTabNavigator({
   },
 }
 )
-//TODO add icons etc...
-const AppContainer = createAppContainer(AppNav)
+
 
 export default class App extends React.Component{
   constructor(props) {
     super(props)
     this.state = {
-      connection:true,
-      connectionChecked:false,
-      appState: AppState.currentState
+      connection:false,
+      hasInternet:true,//TODO
+      appState: AppState.currentState,
+      isLoading: true,
+      loggedIn:false,
+      validToken:false,
+      token: null,
+
+      connectionChecked:false, //REPLACE WITH isloading
     }
   }
 
@@ -62,40 +86,172 @@ export default class App extends React.Component{
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      this.checkConnection()
+      this.checkServer()
     }
-    console.log(nextAppState)
+    if(this.state.appState == 'active' && nextAppState.match(/inactive|background/)){
+      this.setState({
+        connectionChecked:false
+      })
+    }
     this.setState({appState: nextAppState})
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     AppState.addEventListener('change', this._handleAppStateChange)
-    console.log('App.js mounted')
-    this.checkConnection()
+    await this.checkAll()
+    this.setState({
+      isLoading:false
+    })
+    console.log('checking done')
   }
 
-  checkConnection = async (callback) => {
-    console.log('checking connection to server...')
-    let response = await fetch('http://foodapp-backend.serveo.net/api/day/points')//change to status call
+  
+  checkAll = async () =>{
+    await this.checkServer()
+    if(this.state.connection && this.state.connectionChecked){
+      await this.checkUser()
+    }else{
+      alert('geen verbinding met de server')
+    }
+  }
+
+  checkUser = async () =>{
+    if(await this.storageHasToken()){
+      if (await this.testToken()){
+        console.log("go to homepage")
+        this.setState({
+          loggedIn : true
+        })
+      } else {
+        let user = await this.getUserFromStorage()
+        if (user != null){
+          //new token
+          console.log(user)
+          this.getNewToken(user)
+        }else{
+          this.goToLogin()
+        }
+      }
+    }else{
+      this.goToLogin()
+    }
+  }
+
+  goToLogin = () =>{
+    this.setState({
+      loggedIn:false
+    })
+  }
+
+  storageHasToken = async () =>{
+    console.log('Checking authentication token in storage...')
+    try {
+      let value = await Expo.SecureStore.getItemAsync('token')
+      if (value !== null) {
+        console.log(value)
+        this.setState({
+          token:value
+        })
+        return true
+      }else{
+        console.log('No token found')
+        this.setState({
+          token:null
+        })
+        return false
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+  testToken = async () => {
+    console.log(`${Global.url}/api/user/day`)
+    let response = await fetch(`${Global.url}/api/user/day`,{
+      headers:{
+        "Authorization": this.state.token //with bearer 
+      }
+    })
     let status = await response.status
-    console.log(status)
+    console.log(response)
     if(status === 200){
-      console.log('Connection OK')
+      return true
+    }else{
+      return false
+    }
+  }
+
+  getNewToken = async (user) =>{
+    let postResponse = await fetch(`${Global.url}/login`, {
+      method: "POST",
+      body: JSON.stringify(user), //change to userName
+      headers: {
+      "Content-Type": "application/json"
+      }
+    })
+    console.log(postResponse)
+    if(postResponse.status == 200){
+      this.saveToken(postResponse.headers.map.authorization)
+      return true
+    }else{
+      return false
+    }
+  }
+
+  getUserFromStorage = async () =>{
+    console.log('Checking user in storage...')
+    try {
+      const username = await Expo.SecureStore.getItemAsync('username')
+      const password = await Expo.SecureStore.getItemAsync('password')
+      if (username !== null && password !== null) {
+        return {username,password}
+      }else{
+        console.log('No user found')
+        return null
+      }
+    } catch (error) {
+    }
+  }
+
+  notLoggedIn = () =>{
+    this.setState({
+      loggedIn:false,
+    })
+  }
+
+  saveToken = (token) =>{
+    console.log('this is the token')
+    console.log(token)
+    this.setState({
+      token
+    })
+    Expo.SecureStore.setItemAsync('token', token)
+  }
+
+  saveUser = (username, password) =>{
+    Expo.SecureStore.setItemAsync('username',username)
+    Expo.SecureStore.setItemAsync('password',password)
+    this.setState({
+      loggedIn:true,
+      connection:true,
+    })
+    
+  }
+
+  checkServer = async () => {
+    console.log('Checking server status...')
+    let response = await fetch(`${Global.url}/api/status`)//change to status call
+    let status = await response.status
+    if(status === 200){
+      console.log('Server status OK')
       this.setState({
         connection:true,
         connectionChecked:true,
-      },() => {
-        if(callback){
-          if(typeof callback === 'function'){
-            callback()
-          }
-        }
       })
     }else{
-      console.log('Connection NOK')
+      console.log('Server status NOK')
       this.setState({
-        connection:true,
-        //CHANGE THIS TO FALSE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        connection:false,
         connectionChecked:true,
       }) 
     }
@@ -103,21 +259,49 @@ export default class App extends React.Component{
 
   failedConnection = () =>{
     this.setState({
-      connection:false
+      connection:false,
+    })
+  }
+
+  logout = () =>{
+    Expo.SecureStore.deleteItemAsync('username')
+    Expo.SecureStore.deleteItemAsync('password')
+    Expo.SecureStore.deleteItemAsync('token')
+    this.setState({
+      loggedIn:false,
     })
   }
 
   render(){
+    let AppContainer = this.state.loggedIn ? createAppContainer(LoggedInApp) : createAppContainer(LoggedOutApp)
     return(
-      <AppContainer screenProps={{
-        connection:this.state.connection,
-        checkConnection:this.checkConnection,
-        failedConnection:this.failedConnection,
-        appState:this.state.appState,
-        connectionChecked:this.state.connectionChecked,
-        setConnection:this.setConnection,
-      }}/>
+      !this.state.isLoading ?
+        (<AppContainer screenProps={{
+          connection:this.state.connection,
+          checkServer:this.checkServer,
+          failedConnection:this.failedConnection,
+          appState:this.state.appState,
+          connectionChecked:this.state.connectionChecked,
+          setConnection:this.setConnection,
+          getNewToken:this.getNewToken,
+          saveUser:this.saveUser,
+          logout:this.logout,
+          token:this.state.token,
+        }}/> )
+      
+      : 
+      
+      (<View style={styles.mainView}>
+        <ActivityIndicator size="large"/>
+      </View>)
     )
   }
 }
 
+const styles = StyleSheet.create({
+  mainView:{
+    flex:1,
+    justifyContent:'center',
+    alignItems: 'center',
+  }
+})

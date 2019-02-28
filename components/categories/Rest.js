@@ -128,6 +128,7 @@ class Rest extends Component {
             max={50}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
+            token={this.props.token}
           >
 
             <View
