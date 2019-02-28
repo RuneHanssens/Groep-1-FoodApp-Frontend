@@ -4,6 +4,14 @@ import Header from "./../components/Header";
 import { BarChart, YAxis, Grid } from "react-native-svg-charts";
 import * as scale from "d3-scale";
 import { Dropdown } from "react-native-material-dropdown";
+import React from "react"
+import {
+  View,
+  Text,
+  Platform,
+  StatusBar
+} from "react-native"
+import Header from './../components/Header'
 
 export default class DayScreen extends React.Component {
   constructor(props) {
@@ -93,8 +101,8 @@ export default class DayScreen extends React.Component {
     return (
       <View
         style={{
-          paddingTop: 30,
-          flex: 1
+            flex:1,
+            paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.height,
         }}
       >
         <Header text={"Overzicht"} />

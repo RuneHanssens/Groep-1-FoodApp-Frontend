@@ -22,6 +22,11 @@ class Sport extends Component {
     })
   }
 
+  scrollTo = () => {
+    this.props.scrollTo('sportView')
+  }
+
+
   render() {
     let sportData =
     dropDownView = (
@@ -63,6 +68,8 @@ class Sport extends Component {
       </View>
     )
 
+   
+
     return (
       <Category
             ref={'child'}
@@ -71,7 +78,7 @@ class Sport extends Component {
             duration={500}
             fillColor={"#e5e7ea"}
             barColor={"#c6c9ce"}
-            clickEvent={this.props.clickEvent}
+            clickEvent={this.props.clickEvent}D
             dropDownView={dropDownView}
             data={{
                 type:this.state.type,
@@ -81,6 +88,10 @@ class Sport extends Component {
             setProgress={this.props.setProgress}
             connection={this.props.connection}
             setConnection={this.props.setConnection}
+            min={100}
+            max={1000}
+            scrollTo={this.scrollTo}
+            token={this.props.token}
           >
             <View
               style={{

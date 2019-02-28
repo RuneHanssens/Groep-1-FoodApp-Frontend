@@ -26,6 +26,10 @@ class Nuts extends Component {
     })
   }
 
+  scrollTo = (sender) => {
+    this.props.scrollTo('nutsView',sender)
+  }
+
   render() {
     let radio_props = [
       {label: 'Natuur', value: false },
@@ -53,6 +57,10 @@ class Nuts extends Component {
       </View>
     )
 
+    let warningData = [{
+      data:{salted:true},message:'Gezoute nootjes zijn niet gezond!',
+    }]
+
     return (
       <Category
             ref={'child'}
@@ -60,7 +68,7 @@ class Nuts extends Component {
             progress={this.props.progress}
             duration={500}
             fillColor={"#96B057"}
-            barColor={"#809946"}
+            barColor={"#677c35"}
             dropDownView={dropDownView}
             data={{salted:this.state.salted}}
             apiUrl={'nuts'}
@@ -69,6 +77,12 @@ class Nuts extends Component {
             clickEvent={this.props.clickEvent}
             connection={this.props.connection}
             setConnection={this.props.setConnection}
+            min={0}
+            max={110}
+            scrollTo={this.scrollTo}
+            setPrev={this.props.setPrev}
+            warningData={warningData}
+            token={this.props.token}
           >
             <View
               style={{

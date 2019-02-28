@@ -27,6 +27,10 @@ class Water extends Component {
     })
   }
 
+  scrollTo = (sender) => {
+    this.props.scrollTo('waterView',sender)
+  }
+
   render() {
     dropDownView = (
       <View>
@@ -44,7 +48,7 @@ class Water extends Component {
         name={"Water"}
         progress={this.props.progress}
         fillColor={"#B9CED5"}
-        barColor={"#a9c3cc"}
+        barColor={"#83a0aa"}
         dropDownView={dropDownView}
         data={{amount:this.state.cupsOfWater}}
         apiUrl={'water'}
@@ -53,6 +57,11 @@ class Water extends Component {
         clickEvent={this.props.clickEvent}
         connection={this.props.connection}
         setConnection={this.props.setConnection}
+        min={100}
+        max={1000}
+        scrollTo={this.scrollTo}
+        setPrev={this.props.setPrev}
+        token={this.props.token}
       >
         <View
           style={{
