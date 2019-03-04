@@ -1,6 +1,6 @@
 import React from 'react'
 import {AppState, AsyncStorage, ActivityIndicator, StyleSheet,View} from 'react-native'
-import {createBottomTabNavigator, createAppContainer, createStackNavigator} from 'react-navigation'
+import {createBottomTabNavigator, createAppContainer, createStackNavigator,} from 'react-navigation'
 
 import DayScreen from './screens/DayScreen'
 import OverviewScreen from './screens/OverviewScreen'
@@ -60,14 +60,14 @@ export default class App extends React.Component{
     super(props)
     this.state = {
       connection:false,
-      hasInternet:true,//TODO
+      hasInternet:true,
       appState: AppState.currentState,
       isLoading: true,
       loggedIn:false,
       validToken:false,
       token: null,
 
-      connectionChecked:false, //REPLACE WITH isloading
+      connectionChecked:false,
     }
   }
 
@@ -107,6 +107,7 @@ export default class App extends React.Component{
 
   
   checkAll = async () =>{
+    console.log('Check all')
     await this.checkServer()
     if(this.state.connection && this.state.connectionChecked){
       await this.checkUser()
@@ -118,14 +119,12 @@ export default class App extends React.Component{
   checkUser = async () =>{
     if(await this.storageHasToken()){
       if (await this.testToken()){
-        console.log("go to homepage")
         this.setState({
           loggedIn : true
         })
       } else {
         let user = await this.getUserFromStorage()
         if (user != null){
-          //new token
           console.log(user)
           this.getNewToken(user)
         }else{
@@ -148,7 +147,7 @@ export default class App extends React.Component{
     try {
       let value = await Expo.SecureStore.getItemAsync('token')
       if (value !== null) {
-        console.log(value)
+        console.log('Token found: ' + value)
         this.setState({
           token:value
         })
@@ -166,7 +165,7 @@ export default class App extends React.Component{
   }
   
   testToken = async () => {
-    console.log(`${Global.url}/api/user/day`)
+    console.log('Testing the token')
     let response = await fetch(`${Global.url}/api/user/day`,{
       headers:{
         "Authorization": this.state.token //with bearer 
@@ -282,7 +281,7 @@ export default class App extends React.Component{
           failedConnection:this.failedConnection,
           appState:this.state.appState,
           connectionChecked:this.state.connectionChecked,
-          setConnection:this.setConnection,
+          setConnection:this.checkAll,
           getNewToken:this.getNewToken,
           saveUser:this.saveUser,
           logout:this.logout,

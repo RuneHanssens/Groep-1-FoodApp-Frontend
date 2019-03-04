@@ -2,7 +2,6 @@ import React from "react"
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   TouchableOpacity,
 } from "react-native"
@@ -41,10 +40,27 @@ export default class ConnectionWarning extends React.Component {
                     width:'90%',
                 }}
             >
-                Geen verbinding met de server. Controleer je internetverbinding.
+                Er is iets misgegaan duw op onderstaande knop en probeer dan nog eens opnieuw.
             </Text>
-            <Button title='Probeer opnieuw' onPress={this.props.checkServer}/>
+            <TouchableOpacity  style={styles.button}onPress={this.props.checkServer}>
+              <Text style={styles.buttonText}>Controleer</Text>
+            </TouchableOpacity>
         </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  button:{
+      backgroundColor:'#ADC460',
+      padding:15,
+      borderRadius:10,
+      width:'70%',
+      marginTop:20,
+  },
+  buttonText:{
+      textAlign:'center',
+      fontSize:18,
+      color:'#fff'
+  },
+})

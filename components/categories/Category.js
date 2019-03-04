@@ -187,7 +187,7 @@ class Category extends Component {
     } 
 
     let minMaxCheck
-    if(this.props.progress >= this.props.min && this.props.progress < this.props.max){
+    if(this.props.progress >= this.props.min && this.props.progress <= this.props.max){
         minMaxCheck = <Image style={{width:40,height:40}}source={require('../../images/checked.png')}/>
     }else if (this.props.progress > this.props.max) {
         minMaxCheck = <Image style={{width:40,height:40}}source={require('../../images/stop.png')}/>

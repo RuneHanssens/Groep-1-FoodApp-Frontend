@@ -13,24 +13,33 @@ import Header from './../components/Header'
 
 export default class DayScreen extends React.Component {
 
-    setEMail = (value) =>{
-        this.setState({
-            email:value
-        })
+   constructor(props){
+     super(props)
+     this.state = {
+        username:null
+     }
+   }
+
+    componentDidMount = () =>{
+        this.getUsername()
     }
 
-    setPassword = (value) =>{
-        this.setState({
-            password:value
-        })
-    }
 
-    login = () =>{
-        console.log(this.state.email)
-        console.log(this.state.password)
+  getUsername = async () =>{
+    try {
+      const username = await Expo.SecureStore.getItemAsync('username')
+      if (username !== null) {
+        this.setState({username})
+      }else{
+        console.log('No user found')
+        return null
+      }
+    } catch (error) {
     }
+  }
 
   render() {
+    let welcome = (this.state.username ? <Text style={styles.welcome}>Welkom {this.state.username}!</Text> : null)
     return (
       <View
         style={{
@@ -46,6 +55,7 @@ export default class DayScreen extends React.Component {
                 alignItems: 'center',
             }}
         >
+              {welcome}
             <TouchableOpacity onPress={this.props.screenProps.logout} style={styles.button}>
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
@@ -68,4 +78,8 @@ const styles = StyleSheet.create({
       fontSize:18,
       color:'#fff'
   },
+  welcome:{
+    fontSize:20,
+    marginBottom:20,
+  }
 })

@@ -99,7 +99,7 @@ export default class DayScreen extends React.Component {
       <View
         style={{
             flex:1,
-            paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.height,
+            paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
         }}
       >
         <Header text={"Overzicht"} />

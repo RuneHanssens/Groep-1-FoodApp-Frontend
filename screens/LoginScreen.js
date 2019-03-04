@@ -8,6 +8,7 @@ import {
   Alert,
   Platform,
   StatusBar,
+  ActivityIndicator,
 } from "react-native"
 import Header from './../components/Header'
 
@@ -33,15 +34,17 @@ export default class DayScreen extends React.Component {
     }
 
     login = async () =>{
-        if(await this.props.screenProps.getNewToken({userName:this.state.email, password:this.state.password})){
-            this.props.screenProps.saveUser(this.state.email, this.state.password)
-        }else{
-            Alert.alert('', 'Combinatie van gebruikersnaam en wachtwoord klopt niet.')
-        }   
+        let username = this.state.email
+        let password = this.state.password
         this.setState({
             email:'',
             password:'',
         })
+        if(await this.props.screenProps.getNewToken({username, password})){
+            this.props.screenProps.saveUser(username, password)
+        }else{
+            Alert.alert('', 'Combinatie van gebruikersnaam en wachtwoord klopt niet.')
+        }   
     }
 
     navigateToRegister = () =>{
@@ -53,7 +56,7 @@ export default class DayScreen extends React.Component {
       <View
         style={{
             flex:1,
-            paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.height,
+            paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
         }}
       >
         <View style={{
@@ -62,7 +65,7 @@ export default class DayScreen extends React.Component {
             alignItems:'center',
         }}>
             <Text style={styles.title}>Log in</Text>
-            <Text style={styles.textInputLabel}>Email</Text>
+            <Text style={styles.textInputLabel}>Gebruikersnaam</Text>
             <TextInput style={styles.input} textContentType={'emailAddress'} onChangeText={this.setEMail}/>
             <Text style={styles.textInputLabel}>Wachtwoord</Text>
             <TextInput style={styles.input} secureTextEntry={true} onChangeText={this.setPassword}/>

@@ -42,7 +42,7 @@ export default class DayScreen extends React.Component {
     if(this.state.password == this.state.passwordRepeat){
       let postResponse = await fetch(`http://193.191.177.8:10634/api/sign-up`, {
         method: "POST",
-        body: JSON.stringify({password: this.state.password, userName: this.state.email}), //change to userName
+        body: JSON.stringify({password: this.state.password, username: this.state.email}), //change to userName
         headers: {
           "Content-Type": "application/json"
         }
@@ -76,9 +76,9 @@ export default class DayScreen extends React.Component {
             flexDirection:'column',
             alignItems:'center',
         }}>
-            <Text style={styles.title}>Log in</Text>
+            <Text style={styles.title}>Maak een nieuw account</Text>
             
-            <Text style={styles.textInputLabel}>Email</Text>            
+            <Text style={styles.textInputLabel}>Gebruikersnaam</Text>            
             <TextInput style={styles.input} textContentType={'emailAddress'} onChangeText={this.setEMail}/>
             
             <Text style={styles.textInputLabel}>Wachtwoord</Text>
