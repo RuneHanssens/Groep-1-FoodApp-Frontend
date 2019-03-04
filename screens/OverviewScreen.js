@@ -21,16 +21,17 @@ const categories = [
   { value: "Rest groep", url: "snack" }
 ];
 
-const staticData= [{
-  value: 0,
-  svg: {
-    fill: 'white',
-    stroke: 'white'
-  },
-  label: "ljlj",
-  date: ''
-}
-]
+const staticData = [
+  {
+    value: 0,
+    svg: {
+      fill: "white",
+      stroke: "white"
+    },
+    label: "ljlj",
+    date: ""
+  }
+];
 
 const jsonData = [
   {
@@ -74,8 +75,7 @@ const jsonData = [
     points: 40,
     isMax: false,
     isMin: true
-  },
-
+  }
 ];
 
 export default class DayScreen extends React.Component {
@@ -83,7 +83,7 @@ export default class DayScreen extends React.Component {
     super(props);
     this.state = {
       category: "Beweging",
-      data: []
+      data: null
     };
   }
 
@@ -139,41 +139,42 @@ export default class DayScreen extends React.Component {
     }
   };
 
-  formatDate = (date) =>{
+  formatDate = date => {
     var dd = date.getDate();
-    var mm = date.getMonth()+1;
+    var mm = date.getMonth() + 1;
     var yyyy = date.getFullYear();
 
-    if(dd<10) {
-        dd = '0'+dd
-    } 
+    if (dd < 10) {
+      dd = "0" + dd;
+    }
 
-    if(mm<10) {
-        mm = '0'+mm
-    } 
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
 
-    let result = dd + '/' + mm + '/' + yyyy;
-    return result
-}
-  
-  getDataSorted = (jsonData) => {   //async
-      // try{
-      //   if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
-      //     console.log('Loading progress...')
-      //     let response = await fetch(`${Global.url}/api/user/dayrange?startDate=25/02/2019&endDate=03/03/2019&category=movement&username=A`,
-      //     {
-      //       headers: {
-      //       "Authorization":this.props.screenProps.token
-      //     }})
-      //     let data = await response.json()
-      //     console.log(data)
-      //    }else{
-      //     console.log('Cancelled loadProgress: no connection to server')
-      //   }
-      // } catch {
-      //   console.log("FAILED GETDATASORTED")
-      // }
-      let data = []
+    let result = dd + "/" + mm + "/" + yyyy;
+    return result;
+  };
+
+  getDataSorted = async jsonData => {
+    //async
+    // try{
+    //   if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
+    //     console.log('Loading progress...')
+    //     let response = await fetch(`${Global.url}/api/user/dayrange?startDate=25/02/2019&endDate=03/03/2019&category=movement&username=A`,
+    //     {
+    //       headers: {
+    //       "Authorization":this.props.screenProps.token
+    //     }})
+    //     let data = await response.json()
+    //     console.log(data)
+    //    }else{
+    //     console.log('Cancelled loadProgress: no connection to server')
+    //   }
+    // } catch {
+    //   console.log("FAILED GETDATASORTED")
+    // }
+    let data = [];
     for (var i = 0; i < jsonData.length; i++) {
       data[i] = {
         value: jsonData[i].points,
@@ -186,19 +187,22 @@ export default class DayScreen extends React.Component {
       };
     }
 
-    data.sort(function(a, b){
-      return a.date - b.date
-    } );
+    data.sort(function(a, b) {
+      return a.date - b.date;
+    });
 
     this.state.data = data;
-  }
+  };
 
-  componentDidMount = () =>{
-    console.log('OverviewScreen mounted')
-    if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
-      this.submit("Beweging")
+  componentDidMount = () => {
+    console.log("OverviewScreen mounted");
+    if (
+      this.props.screenProps.connection &&
+      this.props.screenProps.connectionChecked
+    ) {
+      this.submit("Beweging");
     }
-  }
+  };
 
   submit = value => {
     console.log(
@@ -210,15 +214,41 @@ export default class DayScreen extends React.Component {
         this.getUrl(value)
     );
 
-    console.log("Submit before data sorted")
     this.setState({ category: value });
     this.getDataSorted(jsonData);
-    console.log("Submit na data sorted")
   };
 
   render() {
-    console.log(this.state.data.length == 0 ? "StaticData" : "stateData")
-    console.log(this.state.data)
+    let graph = this.state.data ? (
+      <View style={{ flexDirection: "row" }}>
+        <YAxis
+          data={this.state.data}
+          // data={staticData}
+          style={{ marginRight: 15 }}
+          svg={{ fontSize: 14 }}
+          yAccessor={({ index }) => index}
+          scale={scale.scaleBand}
+          contentInset={{ top: 10, bottom: 10 }}
+          formatLabel={(_, index) =>
+            this.state.data[index].label
+          }
+          // formatLabel={(_, index) => staticData[index].label}
+        />
+
+        <BarChart
+          style={{ flex: 1, height: 450 }}
+          data={this.state.data}
+          // data={staticData}
+          yAccessor={({ item }) => item.value}
+          horizontal={true}
+          contentInset={{ top: 10, bottom: 10 }}
+          gridMin={0}
+          spacingInner={0.2}
+          animate={true}
+        />
+      </View>
+    ) : null;
+
     return (
       <View
         style={{
@@ -247,32 +277,7 @@ export default class DayScreen extends React.Component {
             }}
           />
 
-
-          <View style={{ flexDirection: "row" }}>
-            <YAxis
-              data={this.state.data.length === 0 ? staticData : this.state.data }
-              // data={staticData}
-              style={{ marginRight: 15 }}
-              svg={{ fontSize: 14 }}
-              yAccessor={({ index }) => index}
-              scale={scale.scaleBand}
-              contentInset={{ top: 10, bottom: 10 }}
-              formatLabel={(_, index) => this.state.data.length === 0 ? staticData[index].label : this.state.data[index].label}
-              // formatLabel={(_, index) => staticData[index].label}
-            />
-
-            <BarChart
-              style={{ flex: 1, height: 450 }}
-              data={this.state.data.lenght === 0 ? staticData : this.state.data}
-              // data={staticData}
-              yAccessor={({ item }) => item.value}
-              horizontal={true}
-              contentInset={{ top: 10, bottom: 10 }}
-              gridMin={0}
-              spacingInner={0.2}
-              animate={true}
-            />
-          </View>
+          {graph}
         </View>
       </View>
     );
