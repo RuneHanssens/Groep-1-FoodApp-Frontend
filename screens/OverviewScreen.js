@@ -4,7 +4,8 @@ import { BarChart, YAxis, Grid } from "react-native-svg-charts";
 import * as scale from "d3-scale";
 import { Dropdown } from "react-native-material-dropdown";
 import Global from "./../Global";
-
+// import { SecureStore } from 'expo';
+// import * as SecureStore from 'expo-secure-store';
 import { View, Text, Platform, StatusBar, Button } from "react-native";
 import { parse } from "querystring";
 
@@ -145,6 +146,16 @@ export default class DayScreen extends React.Component {
     return result;
   };
 
+  getUsername = async () => {
+    username = await Expo.SecureStore.getItemAsync("username")
+    if(username !== null) {
+      console.log("username = " + username)
+      return username
+    } else {
+      console.log("no username found")
+      alert("Meld je opnieuw aan")
+    }
+  }
   getDataSorted = async () => {
     // try {
       if (
@@ -155,8 +166,8 @@ export default class DayScreen extends React.Component {
         let response = await fetch(
           `${
             Global.url
-          }/api/user/dayrange?startDate=${this.formatDate(this.getTodayMinus6())}&endDate=${this.formatDate(new Date())}&category=${this.getUrl(this.state.category)}&username=Testa`,
-          {
+          }/api/user/dayrange?startDate=${this.formatDate(this.getTodayMinus6())}&endDate=${this.formatDate(new Date())}&category=${this.getUrl(this.state.category)}&username=${await this.getUsername()}`,
+          { 
             headers: {
               Authorization: this.props.screenProps.token
             }
@@ -233,8 +244,6 @@ export default class DayScreen extends React.Component {
     );
     this.setState({ category: value });
     this.getDataSorted();
-
-
   };
 
   render() {
@@ -262,6 +271,8 @@ export default class DayScreen extends React.Component {
           spacingInner={0.2}
           animate={true}
         />
+
+        <Grid/>
       </View>
     ) : null;
 
