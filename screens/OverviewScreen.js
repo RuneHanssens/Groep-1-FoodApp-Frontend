@@ -6,6 +6,7 @@ import { Dropdown } from "react-native-material-dropdown";
 import Global from "./../Global";
 
 import { View, Text, Platform, StatusBar, Button } from "react-native";
+import { parse } from "querystring";
 
 const categories = [
   { value: "Beweging", url: "movement" },
@@ -64,11 +65,7 @@ const jsonData = [
     isMax: false,
     isMin: true
   }
-];
-
-staticData[{
-
-}]
+];  
 
 export default class DayScreen extends React.Component {
   constructor(props) {
@@ -115,19 +112,20 @@ export default class DayScreen extends React.Component {
     if (isMax) {
       return "#c4452d"; //'rgba(255, 99, 132, 0.2)'  //red
     } else if (isMin) {
-      return "#F7AC4B"; //'rgba(255, 206, 86, 0.2)'  //orange
+      return "#7e9b4e"; //'rgba(255, 206, 86, 0.2)'  //green
     } else {
-      return "#7e9b4e"; //'rgba(75, 192, 192, 0.2)'  //green
+      return "#F7AC4B"; //'rgba(75, 192, 192, 0.2)'  //orange
     }
   };
 
   getBorderColor = (isMax, isMin) => {
+    console.log("ismax = " + isMax + " isMin = " + isMin)
     if (isMax) {
       return "#7c2413"; //'rgba(255,99,132,1)'  //red
     } else if (isMin) {
-      return "#d18b32"; //'rgba(255, 206, 86, 1)'  //orange
+      return "#5b7036"; //'rgba(255, 206, 86, 1)'  //green
     } else {
-      return "#5b7036"; //'rgba(75, 192, 192, 1)'  //green
+      return "#d18b32"; //'rgba(75, 192, 192, 1)'  //orange
     }
   };
 
@@ -135,7 +133,6 @@ export default class DayScreen extends React.Component {
     var dd = date.getDate();
     var mm = date.getMonth() + 1;
     var yyyy = date.getFullYear();
-
     if (dd < 10) {
       dd = "0" + dd;
     }
@@ -149,15 +146,16 @@ export default class DayScreen extends React.Component {
   };
 
   getDataSorted = async () => {
-    try {
+    // try {
       if (
         this.props.screenProps.connection &&
         this.props.screenProps.connectionChecked
       ) {
+        
         let response = await fetch(
           `${
             Global.url
-          }/api/user/dayrange?startDate=${this.formatDate(this.getTodayMinus6())}&endDate=${this.formatDate(new Date())}&category=${this.getUrl(this.state.category)}&username=Rune`,
+          }/api/user/dayrange?startDate=${this.formatDate(this.getTodayMinus6())}&endDate=${this.formatDate(new Date())}&category=${this.getUrl(this.state.category)}&username=Testa`,
           {
             headers: {
               Authorization: this.props.screenProps.token
@@ -165,15 +163,16 @@ export default class DayScreen extends React.Component {
           }
         );
         let dataJson = await response.json();
+        console.log("!!!!!!!!!!!JSONDATA!!!!!!!!!!")
+        console.log(dataJson)
         let data = []
         Object.keys(dataJson).forEach((key,index) => {
           let el = dataJson[key]
-  
           data.push( {
-            value: el.Points,
+            value: parseInt(el.Points),
             svg: {
-              fill: this.getColor(el.OverMax, el.OverMin),
-              stroke: this.getBorderColor(el.OverMax, el.OverMin)
+              fill: this.getColor( el.OverMax == "true", el.OverMin == "true"),
+              stroke: this.getBorderColor(el.OverMax == "true", el.OverMin == "true")
             },
             label: this.getDay(key),
             date: this.getDate(key)
@@ -188,9 +187,9 @@ export default class DayScreen extends React.Component {
       } else {
         console.log("Cancelled loadProgress: no connection to server");
       }
-    } catch (error) {
-      console.log(error);
-    }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   componentDidMount = () => {
@@ -203,6 +202,26 @@ export default class DayScreen extends React.Component {
     }
   };
 
+  // getTestData = () => {
+  //   let data = [];
+  //   for (var i = 0; i < jsonData.length; i++){
+  //     data.push({
+  //       value: jsonData[i].points,
+  //       svg: {
+  //         fill: this.getColor(jsonData[i].isMax,
+  //           jsonData[i].isMin)
+  //       },
+  //       label: this.getDay(jsonData[i].date),
+  //       date: this.getDate(jsonData[i].date)
+  //     })
+  //   }
+
+  //   data.sort(function(a, b){
+  //     return a.date - b.date;
+  //   })
+  //   this.setState({data})
+  // }
+ 
   submit = value => {
     console.log(
       "Get days from " +
@@ -213,7 +232,9 @@ export default class DayScreen extends React.Component {
         this.getUrl(value)
     );
     this.setState({ category: value });
-    this.getDataSorted(jsonData);
+    this.getDataSorted();
+
+
   };
 
   render() {
@@ -237,6 +258,7 @@ export default class DayScreen extends React.Component {
           horizontal={true}
           contentInset={{ top: 10, bottom: 10 }}
           gridMin={0}
+          gridMax={200}
           spacingInner={0.2}
           animate={true}
         />

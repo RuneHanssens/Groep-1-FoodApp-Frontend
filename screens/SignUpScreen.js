@@ -42,7 +42,7 @@ export default class DayScreen extends React.Component {
     if(this.state.password == this.state.passwordRepeat){
       let postResponse = await fetch(`http://193.191.177.8:10634/api/sign-up`, {
         method: "POST",
-        body: JSON.stringify({password: this.state.password, userName: this.state.email}), //change to userName
+        body: JSON.stringify({password: this.state.password, username: this.state.email}), //change to userName
         headers: {
           "Content-Type": "application/json"
         }

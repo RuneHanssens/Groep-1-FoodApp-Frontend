@@ -33,7 +33,7 @@ export default class DayScreen extends React.Component {
     }
 
     login = async () =>{
-        if(await this.props.screenProps.getNewToken({userName:this.state.email, password:this.state.password})){
+        if(await this.props.screenProps.getNewToken({username:this.state.email, password:this.state.password})){
             this.props.screenProps.saveUser(this.state.email, this.state.password)
         }else{
             Alert.alert('', 'Combinatie van gebruikersnaam en wachtwoord klopt niet.')
