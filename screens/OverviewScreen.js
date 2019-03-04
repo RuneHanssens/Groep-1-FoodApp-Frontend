@@ -21,18 +21,6 @@ const categories = [
   { value: "Rest groep", url: "snack" }
 ];
 
-const staticData = [
-  {
-    value: 0,
-    svg: {
-      fill: "white",
-      stroke: "white"
-    },
-    label: "ljlj",
-    date: ""
-  }
-];
-
 const jsonData = [
   {
     date: "2019-07-03",
@@ -77,6 +65,10 @@ const jsonData = [
     isMin: true
   }
 ];
+
+staticData[{
+
+}]
 
 export default class DayScreen extends React.Component {
   constructor(props) {
@@ -156,42 +148,49 @@ export default class DayScreen extends React.Component {
     return result;
   };
 
-  getDataSorted = async jsonData => {
-    //async
-    // try{
-    //   if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
-    //     console.log('Loading progress...')
-    //     let response = await fetch(`${Global.url}/api/user/dayrange?startDate=25/02/2019&endDate=03/03/2019&category=movement&username=A`,
-    //     {
-    //       headers: {
-    //       "Authorization":this.props.screenProps.token
-    //     }})
-    //     let data = await response.json()
-    //     console.log(data)
-    //    }else{
-    //     console.log('Cancelled loadProgress: no connection to server')
-    //   }
-    // } catch {
-    //   console.log("FAILED GETDATASORTED")
-    // }
-    let data = [];
-    for (var i = 0; i < jsonData.length; i++) {
-      data[i] = {
-        value: jsonData[i].points,
-        svg: {
-          fill: this.getColor(jsonData[i].isMax, jsonData[i].isMin),
-          stroke: this.getBorderColor(jsonData[i].isMax, jsonData[i].isMin)
-        },
-        label: this.getDay(jsonData[i].date),
-        date: this.getDate(jsonData[i].date)
-      };
+  getDataSorted = async () => {
+    try {
+      if (
+        this.props.screenProps.connection &&
+        this.props.screenProps.connectionChecked
+      ) {
+        let response = await fetch(
+          `${
+            Global.url
+          }/api/user/dayrange?startDate=${this.formatDate(this.getTodayMinus6())}&endDate=${this.formatDate(new Date())}&category=${this.getUrl(this.state.category)}&username=Rune`,
+          {
+            headers: {
+              Authorization: this.props.screenProps.token
+            }
+          }
+        );
+        let dataJson = await response.json();
+        let data = []
+        Object.keys(dataJson).forEach((key,index) => {
+          let el = dataJson[key]
+  
+          data.push( {
+            value: el.Points,
+            svg: {
+              fill: this.getColor(el.OverMax, el.OverMin),
+              stroke: this.getBorderColor(el.OverMax, el.OverMin)
+            },
+            label: this.getDay(key),
+            date: this.getDate(key)
+          });
+      })
+      data.sort(function(a, b) {
+        return a.date - b.date;
+      });
+  
+      this.setState({data})
+
+      } else {
+        console.log("Cancelled loadProgress: no connection to server");
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-    data.sort(function(a, b) {
-      return a.date - b.date;
-    });
-
-    this.state.data = data;
   };
 
   componentDidMount = () => {
@@ -213,32 +212,27 @@ export default class DayScreen extends React.Component {
         " with url: " +
         this.getUrl(value)
     );
-
     this.setState({ category: value });
     this.getDataSorted(jsonData);
   };
 
   render() {
+    console.log(this.state.data)
     let graph = this.state.data ? (
       <View style={{ flexDirection: "row" }}>
         <YAxis
           data={this.state.data}
-          // data={staticData}
           style={{ marginRight: 15 }}
           svg={{ fontSize: 14 }}
           yAccessor={({ index }) => index}
           scale={scale.scaleBand}
           contentInset={{ top: 10, bottom: 10 }}
-          formatLabel={(_, index) =>
-            this.state.data[index].label
-          }
-          // formatLabel={(_, index) => staticData[index].label}
+          formatLabel={(_, index) => this.state.data[index].label}
         />
 
         <BarChart
           style={{ flex: 1, height: 450 }}
           data={this.state.data}
-          // data={staticData}
           yAccessor={({ item }) => item.value}
           horizontal={true}
           contentInset={{ top: 10, bottom: 10 }}
