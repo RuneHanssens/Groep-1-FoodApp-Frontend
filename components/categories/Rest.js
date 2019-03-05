@@ -28,7 +28,7 @@ class Rest extends Component {
   subTypeList = () =>{
     return ([
       [{value:'Light'},{value:'Gewoon'}],
-      [{value:'Snoep'},{value:'Chocolade'},{value:'Koeken'},{value:'Gebak'}]])
+      [{value:'Snoep'},{value:'Chocolade'},{value:'Koekjes'},{value:'Gebak'}]])
   }
 
   onTypeClick = (value) =>{

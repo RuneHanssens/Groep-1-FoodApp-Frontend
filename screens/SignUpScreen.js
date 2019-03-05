@@ -76,9 +76,9 @@ export default class DayScreen extends React.Component {
             flexDirection:'column',
             alignItems:'center',
         }}>
-            <Text style={styles.title}>Log in</Text>
+            <Text style={styles.title}>Maak een nieuw account</Text>
             
-            <Text style={styles.textInputLabel}>Email</Text>            
+            <Text style={styles.textInputLabel}>Gebruikersnaam</Text>            
             <TextInput style={styles.input} textContentType={'emailAddress'} onChangeText={this.setEMail}/>
             
             <Text style={styles.textInputLabel}>Wachtwoord</Text>

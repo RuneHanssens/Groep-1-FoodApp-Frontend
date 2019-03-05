@@ -45,14 +45,6 @@ export default class DayScreen extends React.Component {
     }
   }
 
-  componentDidUpdate = (prevProps, prevState) =>{
-    console.log('update')
-    if((prevProps.screenProps.appState == 'background' && this.props.screenProps.appState == 'active')){
-      console.log('hier!!!!!')
-      this.loadProgress()
-    }
-  }
-
   loadProgress = async () => {
     if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
         console.log('Loading progress...')
@@ -315,7 +307,7 @@ const styles = StyleSheet.create({
   },
   mainView: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.height,
+    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
   },
   scrollViewContentStyle: {
     alignItems: 'center',
