@@ -2,6 +2,7 @@ import React from "react"
 import {
   View,
   Text,
+  Platform
 } from "react-native"
 
 
@@ -16,6 +17,7 @@ export default class ButtonHeader extends React.Component {
             fontSize:30,
             textAlign:'center',
             }}>{this.props.date}</Text>)
+        date= (<Text style={{color:'#fff'}}>o</Text>)
     }else{
 
         text = (<Text style={{
@@ -37,7 +39,7 @@ export default class ButtonHeader extends React.Component {
           justifyContent:'center',
           alignItems: 'center',
           paddingBottom: 10,
-          height:'10%',
+          paddingTop:Platform.OS === 'ios' ? 0 : 10,
             }}
         >
             <View

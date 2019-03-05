@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   },
   mainView: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
+    marginTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
   },
   scrollViewContentStyle: {
     alignItems: 'center',

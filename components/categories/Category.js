@@ -34,6 +34,11 @@ class Category extends Component {
         duration: this.props.duration
       }).start()
     }
+    if(prevProps.date != this.props.date){
+      this.setState({
+        deletable:false
+      })
+    }
   }
 
  

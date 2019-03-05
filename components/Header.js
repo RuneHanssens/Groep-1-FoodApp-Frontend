@@ -2,6 +2,7 @@ import React from "react"
 import {
   View,
   Text,
+  Platform
 } from "react-native"
 
 
@@ -16,6 +17,7 @@ export default class Header extends React.Component {
           shadowOpacity: 0.1,
           elevation: 10,
           zIndex:10,
+          paddingTop:Platform.OS === 'ios' ? 0 : 10,
             }}
         >
             <Text style={{

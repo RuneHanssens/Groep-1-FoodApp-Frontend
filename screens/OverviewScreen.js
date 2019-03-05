@@ -245,7 +245,7 @@ export default class DayScreen extends React.Component {
 
   render() {
     let graph = this.state.data ? (
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", height:'75%'}}>
         <YAxis
           data={this.state.data}
           style={{ marginRight: 15 }}
@@ -257,7 +257,7 @@ export default class DayScreen extends React.Component {
         />
 
         <BarChart
-          style={{ flex: 1, height: 450 }}
+          style={{ flex: 1}}
           data={this.state.data}
           yAccessor={({ item }) => item.value}
           horizontal={true}
@@ -277,10 +277,12 @@ export default class DayScreen extends React.Component {
         style={{
             flex:1,
             paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
+            height:'100%',
+            width:'100%',
         }}
       >
         <Header text={"Overzicht"} />
-        <View style={{ margin: 16 }}>
+        <View style={{ margin: 16, height:'100%' }}>
           <Dropdown
             data={categories}
             value={this.state.category}
@@ -298,6 +300,7 @@ export default class DayScreen extends React.Component {
               width: "70%",
               alignSelf: "center"
             }}
+            dropdownPosition={0}
           />
 
           {graph}
