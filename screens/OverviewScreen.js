@@ -122,7 +122,6 @@ export default class DayScreen extends React.Component {
   };
 
   getBorderColor = (isMax, isMin) => {
-    console.log("ismax = " + isMax + " isMin = " + isMin)
     if (isMax) {
       return "#7c2413"; //'rgba(255,99,132,1)'  //red
     } else if (isMin) {
