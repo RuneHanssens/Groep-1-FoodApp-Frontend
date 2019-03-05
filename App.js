@@ -166,14 +166,16 @@ export default class App extends React.Component{
   
   testToken = async () => {
     console.log('Testing the token')
-    let response = await fetch(`${Global.url}/api/user/day`,{
+    let response = await fetch(`${Global.url}/api/user`,{
+      method: "POST",
       headers:{
-        "Authorization": this.state.token //with bearer 
+        "Authorization": this.state.token, //with bearer 
       }
     })
-    let status = await response.status
     console.log(response)
-    if(status === 200){
+    let status = await response.status
+    let username = await Expo.SecureStore.getItemAsync('username')
+    if(status === 200 && response._bodyText == username){
       return true
     }else{
       return false

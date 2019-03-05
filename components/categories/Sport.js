@@ -92,6 +92,7 @@ class Sport extends Component {
             max={1000}
             scrollTo={this.scrollTo}
             token={this.props.token}
+            date={this.props.date}
           >
             <View
               style={{

@@ -75,7 +75,7 @@ class Category extends Component {
     if(this.props.connection){
       console.log('submitting category data')
       console.log(this.props.data)
-      let postResponse = await fetch(`${Global.url}/api/user/day/${this.props.apiUrl}`, {
+      let postResponse = await fetch(`${Global.url}/api/user/day/${this.props.apiUrl}?date=${this.props.date}`, {
         method: "POST",
         body: JSON.stringify(this.props.data),
         headers: {
@@ -112,7 +112,7 @@ class Category extends Component {
     if(this.props.connection){
       console.log('submitting category data')
       console.log(this.props.data)
-      let postResponse = await fetch(`${Global.url}/api/user/day/${this.props.apiUrl}/undo`, {
+      let postResponse = await fetch(`${Global.url}/api/user/day/${this.props.apiUrl}/undo?date=${this.props.date}`, {
         headers: {
           "Authorization":this.props.token
         }

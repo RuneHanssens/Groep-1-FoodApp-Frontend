@@ -89,6 +89,7 @@ class Fruits extends Component {
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
             token={this.props.token}
+            date={this.props.date}
           >
             <View
               style={{

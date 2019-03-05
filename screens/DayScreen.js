@@ -5,9 +5,13 @@ import {
   ScrollView,
   findNodeHandle,
   Platform,
-  StatusBar
+  StatusBar,
+  TouchableOpacity,
+  Text,
+  Image,
 } from "react-native";
 
+import ButtonHeader from './../components/ButtonHeader.js'
 import Vegetables from './../components/categories/Vegetables.js';
 import Fruits from './../components/categories/Fruits.js';
 import Water from './../components/categories/Water.js';
@@ -35,7 +39,26 @@ export default class DayScreen extends React.Component {
       redMeatProgress:0,
       sportsProgress:0,
       restProgress:0,
+      date:new Date()
     }
+  }
+
+
+  formatDate = date => {
+    var dd = date.getDate();
+    var mm = date.getMonth() + 1;
+    var yyyy = date.getFullYear();
+  
+    if (dd < 10) {
+      dd = "0" + dd;
+    }
+  
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+  
+    let result = dd + "/" + mm + "/" + yyyy;
+    return result;
   }
 
   componentDidMount = () =>{
@@ -48,13 +71,13 @@ export default class DayScreen extends React.Component {
   loadProgress = async () => {
     if(this.props.screenProps.connection && this.props.screenProps.connectionChecked){
         console.log('Loading progress...')
-        let response = await fetch(`${Global.url}/api/user/day/points`,
+        let response = await fetch(`${Global.url}/api/user/day/points?date=${this.formatDate(this.state.date)}`,
         {
           headers: {
           "Authorization":this.props.screenProps.token
         }})
+        console.log(response)
         let data = await response.json()
-        console.log(data)
         this.setState({
           sportsProgress:data.MOVEMENT.Points,
           waterProgress:data.WATER.Points,
@@ -142,6 +165,38 @@ export default class DayScreen extends React.Component {
     })
   }
 
+  nextDay = () =>{
+    let date = this.state.date
+    date.setDate(date.getDate() + 1)
+    this.setState({
+      date
+    },()=>this.loadProgress())
+  }
+
+  previousDay = () =>{
+    let date = this.state.date 
+    date.setDate(date.getDate() - 1) 
+    this.setState({
+      date
+    },()=>this.loadProgress())
+  }
+
+  getDateString = () =>{
+    let yesterday = new Date()
+    yesterday.setDate(new Date().getDate() - 1)
+    let beforeYesterday = new Date()
+    beforeYesterday.setDate(new Date().getDate() -2)
+    if(this.formatDate(this.state.date) == this.formatDate(new Date())){
+      return 'Vandaag'
+    }else if(this.formatDate(this.state.date) == this.formatDate(yesterday)){
+      return 'Gisteren'
+    }else if (this.formatDate(this.state.date) == this.formatDate(beforeYesterday)) {
+      return 'Eergisteren'
+    }else{
+      return 'Datum'
+    } 
+  }
+
   render() {
     let connectionWarning
     if(!this.props.screenProps.connection){
@@ -149,7 +204,28 @@ export default class DayScreen extends React.Component {
     }
     return (
       <View ref='view' style={styles.mainView}>
-        <Header text={'Vandaag'}/>
+        <ButtonHeader 
+          text={this.getDateString()}
+          date={this.formatDate(this.state.date)}
+          dateOnly = {this.getDateString() == 'Datum'}
+          backButton={(<TouchableOpacity onPress={this.previousDay}>
+                          <Image
+                            style={{ width: 30, height: 30 }}
+                            source={require("./../images/left-arrow.png")}
+                          />
+                        </TouchableOpacity>)}
+          nextButton={(<TouchableOpacity 
+                        disabled={(this.formatDate(this.state.date)) == (this.formatDate(new Date())) ? true : false} 
+                        onPress={this.nextDay}
+                        style={(this.formatDate(this.state.date)) == (this.formatDate(new Date())) ? {opacity: 0} : {opacity: 1}}
+                        >
+                          <Image
+                            style={{ width: 30, height: 30 }}
+                            source={require("./../images/right-arrow.png")}
+                          />
+                        </TouchableOpacity>)}
+        />
+          
         <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContentStyle} ref={'categoryScrollView'}>
           <View
             ref={'sportView'}
@@ -165,6 +241,7 @@ export default class DayScreen extends React.Component {
               scrollTo={this.scrollToCategory}
               y={this.state.sportsY}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
             />
           </View>
           <View 
@@ -181,6 +258,7 @@ export default class DayScreen extends React.Component {
               scrollTo={this.scrollToCategory}
               y={this.state.waterY}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -196,6 +274,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setVegetablesProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -211,6 +290,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setFruitsProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -226,6 +306,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setNutsProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -241,6 +322,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setCerealProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -256,6 +338,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setFishEtcProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -271,6 +354,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setMeatProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
               />
           </View>
           <View 
@@ -286,6 +370,7 @@ export default class DayScreen extends React.Component {
               setProgress={this.setRestProgress}
               scrollTo={this.scrollToCategory}
               token={this.props.screenProps.token}
+              date={this.formatDate(this.state.date)}
             />
           </View>
         </ScrollView>

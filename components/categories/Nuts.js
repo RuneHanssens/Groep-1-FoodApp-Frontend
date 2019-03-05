@@ -83,6 +83,7 @@ class Nuts extends Component {
             setPrev={this.props.setPrev}
             warningData={warningData}
             token={this.props.token}
+            date={this.props.date}
           >
             <View
               style={{
