@@ -33,7 +33,7 @@ class Sport extends Component {
       <View>
         <Dropdown 
           onChangeText={(value) => this.setState({type:value})}
-          label='Selecteer de sport'
+          label='Selecteer de beweging'
           data={[{value:'Wandelen'},{value:'Lopen'},{value:'Zwemmen'},{value:'Fietsen'},{value:'Anders'}]}
           value={this.state.type}
           style={{
@@ -73,7 +73,7 @@ class Sport extends Component {
     return (
       <Category
             ref={'child'}
-            name={"Sport"}
+            name={"Beweging"}
             progress={this.props.progress}
             duration={500}
             fillColor={"#e5e7ea"}

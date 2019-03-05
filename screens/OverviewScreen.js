@@ -3,97 +3,278 @@ import Header from "./../components/Header";
 import { BarChart, YAxis, Grid } from "react-native-svg-charts";
 import * as scale from "d3-scale";
 import { Dropdown } from "react-native-material-dropdown";
-import {
-  View,
-  Text,
-  Platform,
-  StatusBar
-} from "react-native"
+import Global from "./../Global";
+// import { SecureStore } from 'expo';
+// import * as SecureStore from 'expo-secure-store';
+import { View, Text, Platform, StatusBar, Button } from "react-native";
+import { parse } from "querystring";
+
+const categories = [
+  { value: "Beweging", url: "movement" },
+  { value: "Water", url: "water" },
+  { value: "Groenten", url: "vegetable" },
+  { value: "Fruit", url: "fruit" },
+  { value: "Graanproducten", url: "starchproduct" },
+  {
+    value: "Vis, Gevogelte, Eieren en Zuivelproducten",
+    url: "dairyfishpoultry"
+  },
+  { value: "Vlees en Boter", url: "fattyfood" },
+  { value: "Rest groep", url: "snack" }
+];
+
+const jsonData = [
+  {
+    date: "2019-07-03",
+    points: 10,
+    isMax: false,
+    isMin: true
+  },
+  {
+    date: "2019-07-04",
+    points: 80,
+    isMax: false,
+    isMin: false
+  },
+  {
+    date: "2019-07-05",
+    points: 95,
+    isMax: false,
+    isMin: false
+  },
+  {
+    date: "2019-07-06",
+    points: 105,
+    isMax: true,
+    isMin: false
+  },
+  {
+    date: "2019-07-07",
+    points: 95,
+    isMax: false,
+    isMin: false
+  },
+  {
+    date: "2019-07-08",
+    points: 40,
+    isMax: false,
+    isMin: true
+  },
+  {
+    date: "2019-07-02",
+    points: 40,
+    isMax: false,
+    isMin: true
+  }
+];  
 
 export default class DayScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      category: "BEWEGING"
+      category: "Beweging",
+      data: null
     };
   }
 
+  getDate = value => {
+    return new Date(value);
+  };
 
-  getDay = (value) => {
-  var d = new Date(value);
-  var weekday = new Array(7);
-  weekday[0] = "ZO";
-  weekday[1] = "MA";
-  weekday[2] = "DI";
-  weekday[3] = "WO";
-  weekday[4] = "DO";
-  weekday[5] = "VR";
-  weekday[6] = "ZA";
+  getUrl = value => {
+    for (let i = 0; i < categories.length; i++) {
+      if (categories[i].value == value) {
+        return categories[i].url;
+      }
+    }
+  };
 
-  return weekday[d.getDay()];
-  }
+  getTodayMinus6 = () => {
+    let date1 = new Date();
+    date1.setDate(date1.getDate() - 6);
+    return date1;
+  };
+
+  getDay = value => {
+    var d = this.getDate(value);
+    var weekday = new Array(7);
+    weekday[0] = "ZO";
+    weekday[1] = "MA";
+    weekday[2] = "DI";
+    weekday[3] = "WO";
+    weekday[4] = "DO";
+    weekday[5] = "VR";
+    weekday[6] = "ZA";
+
+    return weekday[d.getDay()];
+  };
 
   getColor = (isMax, isMin) => {
     if (isMax) {
-      return "red"
-    } else if (isMin){
-      return "orange"
+      return "#c4452d"; //'rgba(255, 99, 132, 0.2)'  //red
+    } else if (isMin) {
+      return "#7e9b4e"; //'rgba(255, 206, 86, 0.2)'  //green
     } else {
-      return "green"
+      return "#F7AC4B"; //'rgba(75, 192, 192, 0.2)'  //orange
+    }
+  };
+
+  getBorderColor = (isMax, isMin) => {
+    console.log("ismax = " + isMax + " isMin = " + isMin)
+    if (isMax) {
+      return "#7c2413"; //'rgba(255,99,132,1)'  //red
+    } else if (isMin) {
+      return "#5b7036"; //'rgba(255, 206, 86, 1)'  //green
+    } else {
+      return "#d18b32"; //'rgba(75, 192, 192, 1)'  //orange
+    }
+  };
+
+  formatDate = date => {
+    var dd = date.getDate();
+    var mm = date.getMonth() + 1;
+    var yyyy = date.getFullYear();
+    if (dd < 10) {
+      dd = "0" + dd;
+    }
+
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+
+    let result = dd + "/" + mm + "/" + yyyy;
+    return result;
+  };
+
+  getUsername = async () => {
+    username = await Expo.SecureStore.getItemAsync("username")
+    if(username !== null) {
+      console.log("username = " + username)
+      return username
+    } else {
+      console.log("no username found")
+      alert("Meld je opnieuw aan")
     }
   }
+  getDataSorted = async () => {
+    // try {
+      if (
+        this.props.screenProps.connection &&
+        this.props.screenProps.connectionChecked
+      ) {
+        
+        let response = await fetch(
+          `${
+            Global.url
+          }/api/user/dayrange?startDate=${this.formatDate(this.getTodayMinus6())}&endDate=${this.formatDate(new Date())}&category=${this.getUrl(this.state.category)}&username=${await this.getUsername()}`,
+          { 
+            headers: {
+              Authorization: this.props.screenProps.token
+            }
+          }
+        );
+        let dataJson = await response.json();
+        console.log("!!!!!!!!!!!JSONDATA!!!!!!!!!!")
+        console.log(dataJson)
+        let data = []
+        Object.keys(dataJson).forEach((key,index) => {
+          let el = dataJson[key]
+          data.push( {
+            value: parseInt(el.Points),
+            svg: {
+              fill: this.getColor( el.OverMax == "true", el.OverMin == "true"),
+              stroke: this.getBorderColor(el.OverMax == "true", el.OverMin == "true")
+            },
+            label: this.getDay(key),
+            date: this.getDate(key)
+          });
+      })
+      data.sort(function(a, b) {
+        return a.date - b.date;
+      });
+  
+      this.setState({data})
 
+      } else {
+        console.log("Cancelled loadProgress: no connection to server");
+      }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
+  componentDidMount = () => {
+    console.log("OverviewScreen mounted");
+    if (
+      this.props.screenProps.connection &&
+      this.props.screenProps.connectionChecked
+    ) {
+      this.submit("Beweging");
+    }
+  };
+
+  // getTestData = () => {
+  //   let data = [];
+  //   for (var i = 0; i < jsonData.length; i++){
+  //     data.push({
+  //       value: jsonData[i].points,
+  //       svg: {
+  //         fill: this.getColor(jsonData[i].isMax,
+  //           jsonData[i].isMin)
+  //       },
+  //       label: this.getDay(jsonData[i].date),
+  //       date: this.getDate(jsonData[i].date)
+  //     })
+  //   }
+
+  //   data.sort(function(a, b){
+  //     return a.date - b.date;
+  //   })
+  //   this.setState({data})
+  // }
+ 
+  submit = value => {
+    console.log(
+      "Get days from " +
+        this.formatDate(this.getTodayMinus6()) +
+        " To " +
+        this.formatDate(new Date()) +
+        " with url: " +
+        this.getUrl(value)
+    );
+    this.setState({ category: value });
+    this.getDataSorted();
+  };
 
   render() {
-    let jsonData = [
-      {
-        date: "2019-07-03",
-        points: 10,
-        isMax: false,
-        isMin: true
-      },
-      {
-        date: "2019-07-04",
-        points: 80,
-        isMax: false,
-        isMin: false
-      }, 
-      {
-        date: "2019-07-05",
-        points: 95,
-        isMax: false,
-        isMin: false
-      },
-      {
-        date: "2019-07-06",
-        points: 105,
-        isMax: true,
-        isMin: false
-      },
-      {
-        date: "2019-07-07",
-        points: 95,
-        isMax: false,
-        isMin: false
-      },
-      {
-        date: "2019-07-08",
-        points: 40,
-        isMax: false,
-        isMin: true
-      },
-    ];
+    console.log(this.state.data)
+    let graph = this.state.data ? (
+      <View style={{ flexDirection: "row" }}>
+        <YAxis
+          data={this.state.data}
+          style={{ marginRight: 15 }}
+          svg={{ fontSize: 14 }}
+          yAccessor={({ index }) => index}
+          scale={scale.scaleBand}
+          contentInset={{ top: 10, bottom: 10 }}
+          formatLabel={(_, index) => this.state.data[index].label}
+        />
 
+        <BarChart
+          style={{ flex: 1, height: 450 }}
+          data={this.state.data}
+          yAccessor={({ item }) => item.value}
+          horizontal={true}
+          contentInset={{ top: 10, bottom: 10 }}
+          gridMin={0}
+          gridMax={200}
+          spacingInner={0.2}
+          animate={true}
+        />
 
-    let data = [];
-
-    for (var i = 0; i < jsonData.length; i++) {
-      data[i] = {
-        value: jsonData[i].points,
-        svg: { fill: this.getColor(jsonData[i].isMax, jsonData[i].isMin)}, //Nog aangepast na test
-        label: this.getDay(jsonData[i].date)
-      };
-    }
+        <Grid/>
+      </View>
+    ) : null;
 
     return (
       <View
@@ -105,19 +286,11 @@ export default class DayScreen extends React.Component {
         <Header text={"Overzicht"} />
         <View style={{ margin: 16 }}>
           <Dropdown
-            data={[
-              { value: "BEWEGING" },
-              { value: "Water" },
-              { value: "Groenten" },
-              { value: "Fruit" },
-              { value: "Graanproducten" }
-            ]}
+            data={categories}
             value={this.state.category}
-            onChangeText={value =>
-              this.setState({
-                category: value
-              })
-            }
+            onChangeText={value => {
+              this.submit(value);
+            }}
             style={{
               color: "black",
               fontSize: 24
@@ -126,29 +299,12 @@ export default class DayScreen extends React.Component {
               alignSelf: "center"
             }}
             containerStyle={{
-              width: "90%",
-              alignSelf: "flex-end"
+              width: "70%",
+              alignSelf: "center"
             }}
           />
-          <View style={{ flexDirection: "row" }}>
-            <YAxis
-              data={data}
-              style={{ marginRight: 15, fontWeight: "bold" }}
-              yAccessor={({ index }) => index}
-              scale={scale.scaleBand}
-              contentInset={{ top: 10, bottom: 10 }}
-              formatLabel={(_, index) => data[index].label}
-            />
 
-            <BarChart
-              style={{ flex: 1, height: 300 }}
-              data={data}
-              yAccessor={({ item }) => item.value}
-              horizontal={true}
-              contentInset={{ top: 10, bottom: 10 }}
-              gridMin={0}
-            />
-          </View>
+          {graph}
         </View>
       </View>
     );
