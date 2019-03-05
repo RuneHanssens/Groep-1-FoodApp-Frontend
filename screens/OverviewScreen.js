@@ -75,6 +75,8 @@ export default class DayScreen extends React.Component {
       category: "Beweging",
       data: null
     };
+
+    this.props.navigation.addListener('didFocus', () => this.componentDidMount())
   }
 
   getDate = value => {
@@ -98,13 +100,13 @@ export default class DayScreen extends React.Component {
   getDay = value => {
     var d = this.getDate(value);
     var weekday = new Array(7);
-    weekday[0] = "ZO";
-    weekday[1] = "MA";
-    weekday[2] = "DI";
-    weekday[3] = "WO";
-    weekday[4] = "DO";
-    weekday[5] = "VR";
-    weekday[6] = "ZA";
+    weekday[0] = " ZO ";
+    weekday[1] = " MA ";
+    weekday[2] = " DI ";
+    weekday[3] = " WO  ";
+    weekday[4] = " DO ";
+    weekday[5] = " VR ";
+    weekday[6] = " ZA ";
 
     return weekday[d.getDay()];
   };
@@ -149,10 +151,8 @@ export default class DayScreen extends React.Component {
   getUsername = async () => {
     username = await Expo.SecureStore.getItemAsync("username")
     if(username !== null) {
-      console.log("username = " + username)
       return username
     } else {
-      console.log("no username found")
       alert("Meld je opnieuw aan")
     }
   }
@@ -174,8 +174,6 @@ export default class DayScreen extends React.Component {
           }
         );
         let dataJson = await response.json();
-        console.log("!!!!!!!!!!!JSONDATA!!!!!!!!!!")
-        console.log(dataJson)
         let data = []
         Object.keys(dataJson).forEach((key,index) => {
           let el = dataJson[key]
@@ -204,12 +202,11 @@ export default class DayScreen extends React.Component {
   };
 
   componentDidMount = () => {
-    console.log("OverviewScreen mounted");
     if (
       this.props.screenProps.connection &&
       this.props.screenProps.connectionChecked
     ) {
-      this.submit("Beweging");
+      this.submit(this.state.category);
     }
   };
 
@@ -247,13 +244,12 @@ export default class DayScreen extends React.Component {
   };
 
   render() {
-    console.log(this.state.data)
     let graph = this.state.data ? (
       <View style={{ flexDirection: "row" }}>
         <YAxis
           data={this.state.data}
           style={{ marginRight: 15 }}
-          svg={{ fontSize: 14 }}
+          svg={{ fontSize: 15 }}
           yAccessor={({ index }) => index}
           scale={scale.scaleBand}
           contentInset={{ top: 10, bottom: 10 }}
