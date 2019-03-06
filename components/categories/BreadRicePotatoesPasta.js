@@ -16,7 +16,6 @@ class BreadRicePotatoesPasta extends Component {
   }
 
   reset = () => {
-    console.log('reset')
     this.setState({
       outdoors:false,
       type: "Brood",
@@ -80,7 +79,6 @@ class BreadRicePotatoesPasta extends Component {
   }
 
   render() {
-    console.log(this.state.outdoors)
     let subTypeInput;
     if (this.state.typeIndex != null) {
       subTypeInput = (
