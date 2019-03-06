@@ -66,6 +66,12 @@ export default class DayScreen extends React.Component {
     if(this.props.screenProps.appState == 'active' && this.props.screenProps.connection && this.props.screenProps.connectionChecked){
       this.loadProgress()
     }
+    if(this.formatDate(this.state.date) != this.formatDate(new Date())){
+      console.log('test')
+      this.setState({
+        date:new Date()
+      })
+    }
   }
 
   loadProgress = async () => {

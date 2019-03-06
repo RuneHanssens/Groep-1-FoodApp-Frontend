@@ -11,7 +11,7 @@ class Rest extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      type:'Alcohol',
+      type:'Saus',
       subType: null,
       typeIndex: 0
     }
@@ -19,7 +19,7 @@ class Rest extends Component {
 
   reset = () =>{
     this.setState({
-      type:'Alcohol',
+      type:'Saus',
       subType: null,
       typeIndex: 0,
       outdoors:false,
@@ -90,11 +90,11 @@ class Rest extends Component {
         <Dropdown 
           label='Selecteer het product'
           data={[
+            {value:'Saus'},
             {value:'Alcohol',label:'Glas Alcohol'},
             {value:'Frisdrank', label: 'Glas Frisdrank'},
             {value:'Zoetigheid',},
             {value:'Fastfood',},
-            {value:'Saus'}
           ]} 
           value={this.state.type}
           onChangeText={(value)=>this.onTypeClick(value)}

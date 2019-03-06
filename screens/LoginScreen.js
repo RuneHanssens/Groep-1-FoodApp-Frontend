@@ -48,7 +48,10 @@ export default class DayScreen extends React.Component {
     }
 
     navigateToRegister = () =>{
-        this.props.navigation.navigate('SignUp')
+        this.setState({
+            email:'',
+            password:'',
+        },()=>this.props.navigation.navigate('SignUp'))
     }
 
   render() {
@@ -66,9 +69,9 @@ export default class DayScreen extends React.Component {
         }}>
             <Text style={styles.title}>Log in</Text>
             <Text style={styles.textInputLabel}>Gebruikersnaam</Text>
-            <TextInput style={styles.input} textContentType={'emailAddress'} onChangeText={this.setEMail}/>
+            <TextInput style={styles.input} textContentType={'emailAddress'} onChangeText={this.setEMail} value={this.state.email}/>
             <Text style={styles.textInputLabel}>Wachtwoord</Text>
-            <TextInput style={styles.input} secureTextEntry={true} onChangeText={this.setPassword}/>
+            <TextInput style={styles.input} secureTextEntry={true} onChangeText={this.setPassword} value={this.state.password}/>
             <TouchableOpacity style={styles.button} onPress={this.login}>
                 <Text style={styles.buttonText}>Log in</Text>
             </TouchableOpacity>

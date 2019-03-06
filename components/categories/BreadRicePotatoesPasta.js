@@ -9,24 +9,25 @@ class BreadRicePotatoesPasta extends Component {
     super(props);
     this.state = {
       type: "Brood",
-      subType: "Wit",
+      subType: "Witte Boterham",
       typeIndex: 0,
       outdoors:false,
     };
   }
 
   reset = () => {
-    this.state = {
-      type: "Brood",
-      subType: "Wit",
-      typeIndex: 0,
+    console.log('reset')
+    this.setState({
       outdoors:false,
-    };
+      type: "Brood",
+      subType: "Witte Boterham",
+      typeIndex: 0,
+    });
   };
 
   subTypeList = () => {
     return [
-      [{ value: "WitteBoterham", label: 'Witte Boterham' }, { value: "DonkereBoterham", label: 'Donkere Boterham' }, {value: "Broodje"}],
+      [{ value: "Witte Boterham"}, { value: "Donkere Boterham"}, {value: "Broodje"}],
       [{ value: "Wit" }, { value: "Volkoren" }],
       [
         { value: "Gekookt" },
@@ -79,6 +80,7 @@ class BreadRicePotatoesPasta extends Component {
   }
 
   render() {
+    console.log(this.state.outdoors)
     let subTypeInput;
     if (this.state.typeIndex != null) {
       subTypeInput = (
@@ -116,7 +118,7 @@ class BreadRicePotatoesPasta extends Component {
             { value: "Wrap" },
           ]}
           value={this.state.type}
-          onChangeText={value => this.onTypeClick(value)}
+          onChangeText={value => {console.log(value);this.onTypeClick(value)}}
           style={{
             color: "#fff",
             fontSize: 20

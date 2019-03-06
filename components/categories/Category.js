@@ -60,10 +60,7 @@ class Category extends Component {
 
   submit = () => {
     if(this.props.warningData){
-      console.log('warning')
-      console.log(this.props.warningData)
       let data = JSON.parse(JSON.stringify(this.props.data))
-      console.log(data)
       delete data.outdoors
       for (let i = 0; i < this.props.warningData.length; i++) {
         console.log(JSON.stringify(this.props.warningData[i].data))
