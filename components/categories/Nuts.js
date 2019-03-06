@@ -22,7 +22,8 @@ class Nuts extends Component {
 
   reset = () =>{
     this.setState({
-      salted:false
+      salted:false,
+      outdoors:false,
     })
   }
 

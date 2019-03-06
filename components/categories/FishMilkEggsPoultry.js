@@ -24,7 +24,8 @@ class FishMilkEggsPoultry extends Component {
     this.setState({
       type:'Vis',
       amount: 0,
-      subType:'Hollandse Kaas'
+      subType:'Hollandse Kaas',
+      outdoors:false,
     })
   }
 

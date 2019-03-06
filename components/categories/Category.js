@@ -60,9 +60,13 @@ class Category extends Component {
 
   submit = () => {
     if(this.props.warningData){
+      console.log('warning')
+      console.log(this.props.warningData)
+      let data = JSON.parse(JSON.stringify(this.props.data))
+      console.log(data)
+      delete data.outdoors
       for (let i = 0; i < this.props.warningData.length; i++) {
-        let data = JSON.parse(JSON.stringify(this.props.data))
-        delete data.outdoors
+        console.log(JSON.stringify(this.props.warningData[i].data))
         if(JSON.stringify(data) ==  JSON.stringify(this.props.warningData[i].data)){
           Alert.alert('Pas op', this.props.warningData[i].message)
         }

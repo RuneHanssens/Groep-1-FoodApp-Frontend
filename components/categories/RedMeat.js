@@ -25,7 +25,8 @@ class RedMeat extends Component {
 
   reset = () =>{
     this.setState({
-      type:'Rood Vlees'
+      type:'Rood Vlees',
+      outdoors:false,
     })
   }
 

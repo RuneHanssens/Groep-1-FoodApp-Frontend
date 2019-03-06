@@ -21,13 +21,14 @@ class Rest extends Component {
     this.setState({
       type:'Alcohol',
       subType: null,
-      typeIndex: 0
+      typeIndex: 0,
+      outdoors:false,
     })
   }
 
   subTypeList = () =>{
     return ([
-      [{value:'Light'},{value:'Gewoon'}],
+      [{value:'Gewoon'},{value:'Light'},],
       [{value:'Snoep'},{value:'Chocolade'},{value:'Koekjes'},{value:'Gebak'}]])
   }
 
@@ -88,7 +89,13 @@ class Rest extends Component {
       <View>
         <Dropdown 
           label='Selecteer het product'
-          data={[{value:'Alcohol',},{value:'Frisdrank',},{value:'Zoetigheid',},{value:'Fastfood',},{value:'Saus'}]} 
+          data={[
+            {value:'Alcohol',label:'Glas Alcohol'},
+            {value:'Frisdrank', label: 'Glas Frisdrank'},
+            {value:'Zoetigheid',},
+            {value:'Fastfood',},
+            {value:'Saus'}
+          ]} 
           value={this.state.type}
           onChangeText={(value)=>this.onTypeClick(value)}
           style={{
@@ -125,7 +132,7 @@ class Rest extends Component {
             connection={this.props.connection}
             setConnection={this.props.setConnection}
             min={0}
-            max={50}
+            max={20}
             scrollTo={this.scrollTo}
             setPrev={this.props.setPrev}
             token={this.props.token}

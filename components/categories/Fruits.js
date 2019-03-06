@@ -30,7 +30,8 @@ class Fruits extends Component {
 
   reset = () =>{
     this.setState({
-      amountOfFruit:0
+      amountOfFruit:0,
+      outdoors:false,
     })
   }
 

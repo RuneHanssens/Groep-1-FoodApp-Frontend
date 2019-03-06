@@ -19,20 +19,22 @@ class BreadRicePotatoesPasta extends Component {
     this.state = {
       type: "Brood",
       subType: "Wit",
-      typeIndex: 0
+      typeIndex: 0,
+      outdoors:false,
     };
   };
 
   subTypeList = () => {
     return [
-      [{ value: "Wit" }, { value: "Donker" }],
+      [{ value: "WitteBoterham", label: 'Witte Boterham' }, { value: "DonkereBoterham", label: 'Donkere Boterham' }, {value: "Broodje"}],
       [{ value: "Wit" }, { value: "Volkoren" }],
       [
         { value: "Gekookt" },
         { value: "Gebakken" },
         { value: "Gratin" },
         { value: "Frieten" }
-      ]
+      ],
+      [{ value: "Wit" }, { value: "Donker" }],
     ];
   };
 
@@ -51,6 +53,10 @@ class BreadRicePotatoesPasta extends Component {
       case "Pasta":
         index = 1;
         break;
+      case "Wrap":
+      index = 3;
+      break;
+        
       default:
         index = null;
         break;
@@ -106,7 +112,8 @@ class BreadRicePotatoesPasta extends Component {
             { value: "Rijst" },
             { value: "Aardappelen" },
             { value: "Granola of Havermout" },
-            { value: "Cornflakes" }
+            { value: "Cornflakes" },
+            { value: "Wrap" },
           ]}
           value={this.state.type}
           onChangeText={value => this.onTypeClick(value)}
@@ -146,13 +153,13 @@ class BreadRicePotatoesPasta extends Component {
       </View>
     );
 
-    let warningData = [{
-      data:{type:'Cornflakes'},message:'Cornflakes zijn zeer ongezond!',
-      data:{type:'Pasta',subType:'Wit'}, message:'Witte pasta is niet zo gezond!',
-      data:{type:'Rijst',subType:'Wit'}, message:'Witte rijst is niet zo gezond, kies liever voor volkoren of zilvervliesrijst!',
-      data:{type:'Aardappelen',subType:'Frieten'}, message:'Je mag maximaal 1 keer per week frieten eten!',
-      data:{type:'Brood',subType:'Wit'}, message:'Wit brood is niet zo gezond, kies liever voor volkoren!',
-    }]
+    let warningData = [
+      {data:{type:'Cornflakes'},message:'Cornflakes zijn zeer ongezond!'},
+      {data:{type:'Pasta',subType:'Wit'}, message:'Witte pasta is niet zo gezond!'},
+      {data:{type:'Rijst',subType:'Wit'}, message:'Witte rijst is niet zo gezond, kies liever voor volkoren of zilvervliesrijst!'},
+      {data:{type:'Aardappelen',subType:'Frieten'}, message:'Je mag maximaal 1 keer per week frieten eten!'},
+      {data:{type:'Brood',subType:'Wit'}, message:'Wit brood is niet zo gezond, kies liever voor volkoren!'},
+    ]
     return (
       <Category
         ref={"child"}
